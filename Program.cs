@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ProjectWeeb.GameCard.Control;
 
 namespace ProjectWeeb
 {
@@ -13,6 +14,7 @@ namespace ProjectWeeb
     {
         public static void Main(string[] args)
         {
+            GameManager.GetInstance();
             CreateHostBuilder(args).Build().Run();
         }
 
