@@ -15,23 +15,8 @@ namespace ProjectWeeb.GameCard.Control
         private GameManager()
         {
             Connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:53353/ChatHub")
+                .WithUrl("https://localhost:44382/GameHub")
                 .Build();
-
-            Connection.Closed += async (error) =>
-            {
-                await Task.Delay(new Random().Next(0, 5) * 1000);
-                await Connection.StartAsync();
-            };
-
-            Connection.Closed += async (error) =>
-            {
-                await Task.Delay(new Random().Next(0, 5) * 1000);
-                
-            };
-
-            
-
         }
 
         public static GameManager GetInstance()
@@ -56,14 +41,32 @@ namespace ProjectWeeb.GameCard.Control
         {
             try
             {
-                await Connection.StartAsync();
+                if (Connection.State == HubConnectionState.Disconnected)
+                {
+                    await Connection.StartAsync();
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-
+        } 
+        
+        public async void Disconnect()
+        {
+            try
+            {
+                if (Connection.State == HubConnectionState.Connected)
+                {
+                    await Connection.StopAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public void SetUpGame()
