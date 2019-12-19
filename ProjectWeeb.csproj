@@ -8,6 +8,10 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\src\Entropy_logo.png" />
+  </ItemGroup>
+
 
 
 </Project>
