@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ProjectWeeb.GameCard.Business;
 using ProjectWeeb.GameCard.Business.BusinessData;
 using ProjectWeeb.GameCard.Business.ModelLiteDbClass;
+using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.GameCard.Control.Converter
 {
