@@ -5,15 +5,7 @@ using System.Threading.Tasks;
 
 namespace ProjectWeeb.GameCard.Business
 {
-    public class Deck
+    public class Location
     {
-        public Deck()
-        {
-
-        }
-
-        public int IdDeck { get; set; }
-
-        public List<Card> Cards { get; set; }
     }
 }

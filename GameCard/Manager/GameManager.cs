@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualBasic;
-using ProjectWeeb.GameCard.Business;
 using Microsoft.AspNetCore.SignalR.Client;
+using ProjectWeeb.GameCard.Business;
+using ProjectWeeb.GameCard.Business.BusinessData;
 
-namespace ProjectWeeb.GameCard.Control
+namespace ProjectWeeb.GameCard.Manager
 {
     public class GameManager
     {
@@ -80,12 +78,39 @@ namespace ProjectWeeb.GameCard.Control
             {
                 // On choisi le premier current player en random
 
-
-
-
                 // Au tour du joueur suivante
                 CurrentTurnPlayer = CurrentTurnPlayer == Player1 ? Player2 : Player1;
             }
+        }
+
+        public async Task LogInPlayer(Player player)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task DisconnectPlayer(Player player)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task PlayCard(Player player, Card card, Location location)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task DealDamageToOpponent(Card card, Player receiver)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task DealDamageToCard(Player receiver, Card cardDealer, Card cardReceiver)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task ActivateCardEffect(Card card, Effect effect)
+        {
+            throw new NotImplementedException();
         }
     }
 }

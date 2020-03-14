@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using ProjectWeeb.GameCard.Control;
+using ProjectWeeb.GameCard.Business.BusinessData;
 
 namespace ProjectWeeb.GameCard.Business
 {
@@ -18,12 +18,14 @@ namespace ProjectWeeb.GameCard.Business
 
         public int Level { get; set; }
 
-        public int IdPlayer { get; set; }
+        public int IdUser { get; set; }
 
         public List<Deck> Decks { get; set; }
 
         public Deck SelectedDeck { get; set; }
 
         public int Hp { get; set; }
+
+        public string ConnectionId { get; set; }
     }
 }

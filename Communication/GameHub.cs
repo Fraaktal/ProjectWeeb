@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR;
 using MySqlX.XDevAPI;
 using ProjectWeeb.GameCard.Business;
-using ProjectWeeb.GameCard.Control;
+using ProjectWeeb.GameCard.Business.BusinessData;
+using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.Communication
 {
@@ -51,7 +52,5 @@ namespace ProjectWeeb.Communication
         {
             await GameManager.GetInstance().ActivateCardEffect(card, effect);
         }
-
-
     }
 }
