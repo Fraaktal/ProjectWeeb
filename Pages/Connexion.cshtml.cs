@@ -12,5 +12,10 @@ namespace ProjectWeeb.Pages.Lolo
         public void OnGet()
         {
         }
+
+        public void SubmitBtn_Click()
+        {
+
+        }
     }
 }
