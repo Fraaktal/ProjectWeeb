@@ -2,7 +2,17 @@
 @model ProjectWeeb.Pages.Lolo.ConnectionModel
 @{
     <div class="container">
-
+        <form action="" method="get" class="connection">
+            <div>
+                <label for="username">Username or Email</label>
+                <input type="text" name="username" id="username" required/>
+            </div>
+            <div>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required/>
+            </div>
+            <button type="submit" value="Log in"></button>
+        </form>
 
     </div>
 }
