@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LiteDB" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.0" />
     <PackageReference Include="MySql.Data" Version="8.0.18" />
   </ItemGroup>
