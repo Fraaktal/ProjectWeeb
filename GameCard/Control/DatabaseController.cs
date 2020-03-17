@@ -1,4 +1,5 @@
-﻿using LiteDB;
+﻿using System.IO;
+using LiteDB;
 using ProjectWeeb.GameCard.Business;
 using ProjectWeeb.GameCard.Business.BusinessData;
 using ProjectWeeb.GameCard.Business.ModelLiteDbClass;
@@ -13,50 +14,70 @@ namespace ProjectWeeb.GameCard.Control
         private const string USER_TABLE = "ModelUserLiteDb";
         private const string DECK_TABLE = "ModelDeckLiteDb";
 
-        public DatabaseController(WebSiteManager webSiteManager, LiteDatabase database)
+        public DatabaseController(WebSiteManager webSiteManager)
         {
             WebSiteManager = webSiteManager;
-            Database = database;
         }
 
         private WebSiteManager WebSiteManager { get; set; }
 
-        private LiteDatabase Database { get; set; }
+        private string DatabasePath
+        {
+            get
+            {
+                string path = Path.Combine(System.Reflection.Assembly.GetEntryAssembly()?.Location, "liteDb");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                return path;
+            }
+        }
 
         #region Card
 
         public void SaveCard(Card card)
         {
-            CardConverter cardConverter = new CardConverter();
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                CardConverter cardConverter = new CardConverter();
 
-            ModelCardLiteDb modelCardLiteDb = cardConverter.ConvertToModel(card);
+                ModelCardLiteDb modelCardLiteDb = cardConverter.ConvertToModel(card);
 
-            var col = Database.GetCollection<ModelCardLiteDb>(CARD_TABLE);
+                var col = database.GetCollection<ModelCardLiteDb>(CARD_TABLE);
 
-            col.EnsureIndex(x => x.Id);
+                col.EnsureIndex(x => x.Id);
 
-            col.Insert(modelCardLiteDb);
+                col.Insert(modelCardLiteDb);
+            }
         }
 
         public Card getCard(int id)
         {
-            CardConverter cardConverter = new CardConverter();
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                CardConverter cardConverter = new CardConverter();
 
-            var col = Database.GetCollection<ModelCardLiteDb>(CARD_TABLE);
+                var col = database.GetCollection<ModelCardLiteDb>(CARD_TABLE);
 
-            var modelCard = col.FindOne(c => c.Id == id);
+                var modelCard = col.FindOne(c => c.Id == id);
 
-            Card card = cardConverter.ConvertBusiness(modelCard);
+                Card card = cardConverter.ConvertBusiness(modelCard);
 
-            return card;
+                return card;
+            }
         }
 
         public void DeleteCard(int id)
         {
-            var col = Database.GetCollection<ModelCardLiteDb>(CARD_TABLE);
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                var col = database.GetCollection<ModelCardLiteDb>(CARD_TABLE);
 
-            var value = new BsonValue(id);
-            col.Delete(value);
+                var value = new BsonValue(id);
+                col.Delete(value);
+            }
         }
 
         #endregion
@@ -65,36 +86,46 @@ namespace ProjectWeeb.GameCard.Control
 
         public void RegisterUser(User user)
         {
-            UserConverter userConverter = new UserConverter();
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                UserConverter userConverter = new UserConverter();
 
-            ModelUserLiteDb modelUserLiteDb = userConverter.ConvertToModel(user);
+                ModelUserLiteDb modelUserLiteDb = userConverter.ConvertToModel(user);
 
-            var col = Database.GetCollection<ModelUserLiteDb>(USER_TABLE);
+                var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
 
-            col.EnsureIndex(x => x.Id, true);
+                col.EnsureIndex(x => x.Id, true);
 
-            col.Insert(modelUserLiteDb);
+                col.Insert(modelUserLiteDb);
+            }
         }
 
         public User LogUser(string login, string password)
         {
-            UserConverter userConverter = new UserConverter();
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                UserConverter userConverter = new UserConverter();
 
-            var col = Database.GetCollection<ModelUserLiteDb>(USER_TABLE);
+                var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
 
-            var modelUser = col.FindOne(c => (c.UserName.Equals(login) || c.MailAdress.Equals(login)) && c.Password.Equals(password));
+                var modelUser = col.FindOne(c =>
+                    (c.UserName.Equals(login) || c.MailAdress.Equals(login)) && c.Password.Equals(password));
 
-            User user = userConverter.ConvertToBusiness(modelUser);
+                User user = userConverter.ConvertToBusiness(modelUser);
 
-            return user;
+                return user;
+            }
         }
 
         public void DeleteAccount(int id)
         {
-            var col = Database.GetCollection<ModelUserLiteDb>(USER_TABLE);
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
 
-            var value = new BsonValue(id);
-            col.Delete(value);
+                var value = new BsonValue(id);
+                col.Delete(value);
+            }
         }
 
         #endregion
@@ -103,36 +134,45 @@ namespace ProjectWeeb.GameCard.Control
 
         public void SaveDeck(Deck deck)
         {
-            DeckConverter deckConverter = new DeckConverter();
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                DeckConverter deckConverter = new DeckConverter();
 
-            ModelDeckLiteDb modelDeckLiteDb = deckConverter.ConvertToModel(deck);
+                ModelDeckLiteDb modelDeckLiteDb = deckConverter.ConvertToModel(deck);
 
-            var col = Database.GetCollection<ModelDeckLiteDb>(DECK_TABLE);
+                var col = database.GetCollection<ModelDeckLiteDb>(DECK_TABLE);
 
-            col.EnsureIndex(x => x.Id);
+                col.EnsureIndex(x => x.Id);
 
-            col.Insert(modelDeckLiteDb);
+                col.Insert(modelDeckLiteDb);
+            }
         }
 
         public Deck GetDeck(int id)
         {
-            DeckConverter deckConverter = new DeckConverter();
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                DeckConverter deckConverter = new DeckConverter();
 
-            var col = Database.GetCollection<ModelDeckLiteDb>(DECK_TABLE);
+                var col = database.GetCollection<ModelDeckLiteDb>(DECK_TABLE);
 
-            var modelDeck = col.FindOne(c => c.Id == id);
+                var modelDeck = col.FindOne(c => c.Id == id);
 
-            Deck deck = deckConverter.ConvertBusiness(modelDeck);
+                Deck deck = deckConverter.ConvertBusiness(modelDeck);
 
-            return deck;
+                return deck;
+            }
         }
 
         public void DeleteDeck(int id)
         {
-            var col = Database.GetCollection<ModelDeckLiteDb>(DECK_TABLE);
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                var col = database.GetCollection<ModelDeckLiteDb>(DECK_TABLE);
 
-            var value = new BsonValue(id);
-            col.Delete(value);
+                var value = new BsonValue(id);
+                col.Delete(value);
+            }
         }
 
         #endregion
