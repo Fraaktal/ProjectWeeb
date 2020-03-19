@@ -2,17 +2,18 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 .Connexion {
-    background-image =
+    background-image: url('../src/projectweeb_buttons_gold.png');
 }
 
 .Inscription {
-    background-image =
+    background-image: url('../src/projectweeb_buttons_gold.png');
 }
 
 .logo_accueil {
-
+    
 }
 
-body{
-    background-image=
+body {
+    background-image: url('../src/accueil_background.png');
+    background-size: 100% ;
 }
