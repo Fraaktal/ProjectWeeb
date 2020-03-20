@@ -6,14 +6,19 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 .Inscription {
-    background-image: url('../src/projectweeb_buttons_gold.png');
+    border:none;
+    text-align:center;
+}
+
+.Bouton {
+    border:none;
 }
 
 .logo_accueil {
-    
+    background-image: url('../src/entropy_logo.png');
 }
 
 body {
     background-image: url('../src/accueil_background.png');
-    background-size: 100% ;
+    background-size: auto;
 }

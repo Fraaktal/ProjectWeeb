@@ -1,12 +1,12 @@
 ﻿@page
 @model ProjectWeeb.Pages.IndexModel
-<div class="container">
-        
-    <a asp-area="" asp-page="/Inscription">
-        <img asp-area="" asp-page="/Inscription" class="Button" src="/src/ProjectWeeb_Buttons_gold.png" />
-    </a>
-    <img id="logo_accueil" class="item"/>
-    <a id="Connexion" class="item" asp-area="" asp-page="/Connexion">
-        <img asp-area="" asp-page="/Inscription" class="Button" src="/src/ProjectWeeb_Buttons_gold.png" />
-    </a>
-</div>
+    <div class="container">
+        <button id="Inscription" class="Bouton">
+            <a asp-area="" asp-page="/Inscription">
+                <img src="~/src/ProjectWeeb_Buttons_gold.png" /> 
+                Inscription
+            </a>
+        </button>
+        <img id="logo_accueil" class="item"/>
+        <a id="Connexion" class="item" asp-area="" asp-page="/Connexion">Connexion</a>
+    </div>
