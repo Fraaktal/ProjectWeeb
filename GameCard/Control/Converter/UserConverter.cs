@@ -15,7 +15,6 @@ namespace ProjectWeeb.GameCard.Control.Converter
             User resultUser = new User();
 
             resultUser.UserName = modelUser.UserName;
-            resultUser.MailAdress = modelUser.MailAdress;
             resultUser.Password = modelUser.Password; // ?
             resultUser.Decks = GetDecksByIds(modelUser.DecksIds);
             resultUser.Cards = GetCardsByIds(modelUser.CardsIds);
@@ -29,7 +28,6 @@ namespace ProjectWeeb.GameCard.Control.Converter
             ModelUserLiteDb resultUser = new ModelUserLiteDb();
 
             resultUser.UserName = user.UserName;
-            resultUser.MailAdress = user.MailAdress;
             resultUser.Password = user.Password; // ?
             resultUser.DecksIds = GetDecksIds(user.Decks);
             resultUser.CardsIds = GetCardsIds(user.Cards);

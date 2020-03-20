@@ -25,13 +25,13 @@ namespace ProjectWeeb.GameCard.Control
         {
             get
             {
-                string path = Path.Combine(System.Reflection.Assembly.GetEntryAssembly()?.Location, "liteDb");
+                string path = Path.Combine(Path.GetTempPath(), "ProjectWeeb","LiteDb");
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
 
-                return path;
+                return Path.Combine(path, "Weeb.db");
             }
         }
 
@@ -109,9 +109,14 @@ namespace ProjectWeeb.GameCard.Control
                 var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
 
                 var modelUser = col.FindOne(c =>
-                    (c.UserName.Equals(login) || c.MailAdress.Equals(login)) && c.Password.Equals(password));
+                    c.UserName.Contains(login) && c.Password.Contains(password));
 
-                User user = userConverter.ConvertToBusiness(modelUser);
+                User user = null;
+
+                if (modelUser != null)
+                {
+                    user = userConverter.ConvertToBusiness(modelUser);
+                }
 
                 return user;
             }
@@ -125,6 +130,23 @@ namespace ProjectWeeb.GameCard.Control
 
                 var value = new BsonValue(id);
                 col.Delete(value);
+            }
+        }
+
+        public bool DoesUserExist(string login)
+        {
+            using (var database = new LiteDatabase(DatabasePath))
+            {
+                var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
+
+                var modelUser = col.FindOne(c =>(c.UserName.Contains(login)));
+
+                if (modelUser != null)
+                {
+                    return true;
+                }
+
+                return false;
             }
         }
 
@@ -176,7 +198,5 @@ namespace ProjectWeeb.GameCard.Control
         }
 
         #endregion
-
-
     }
 }

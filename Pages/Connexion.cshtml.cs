@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.SignalR.Client;
 using ProjectWeeb.GameCard.Control;
+using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.Pages
 {
@@ -8,15 +9,20 @@ namespace ProjectWeeb.Pages
     {
         public void OnGet()
         {
-            var connexion = new HubConnectionBuilder().WithUrl("http://localhost:50322/GameHub").Build();
+
+            GameManager.GetInstance().GameCommunicator.Connect();
         }
 
-        public void SubmitBtn_Click()
+        public void OnPost()
         {
-            string login = "";
-            string password = "";
+            string login = Request.Form["login"];
+            string password = Request.Form["password"];
 
-            CWebSite.GetInstance().WebSiteManager.UserController.TryLogUser(login,password);
+            var test = GameManager.GetInstance().GameCommunicator.Connection;
+
+            CWebSite.GetInstance().WebSiteManager.UserController.TryLogUser(login, password);
         }
+
+        
     }
 }

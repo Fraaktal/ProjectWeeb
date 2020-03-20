@@ -2,23 +2,20 @@
 @model ProjectWeeb.Pages.Lolo.InscriptionModel
 @{
     <div class="container">
-        <form action="" method="post" class="inscription">
+        <form method="POST">
             <div>
-                <label for="username">Username</label>
-                <input type="text" name="username" id="username" required />
+                <label for="login">Pseudonyme</label>
+                <input type="text" name="login" id="login" required />
             </div>
             <div>
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email" required />
-            </div>
-            <div>
-                <label for="password">Password</label>
+                <label for="password">Mot de passe</label>
                 <input type="password" name="password" id="password" required />
             </div>
             <div>
-                <label for="confPassword">Password Confirmation</label>
-                <input type="password" name="confPassword" id="confPassword" minlength="8" required />
+                <label for="confPassword">Confirmer le mot de passe</label>
+                <input type="password" name="confPassword" id="confPassword" minlength="4" required />
             </div>
+            <input type="submit" value="Valider" />
         </form>
     </div>
 }

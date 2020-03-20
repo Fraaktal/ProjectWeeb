@@ -54,27 +54,30 @@ namespace ProjectWeeb.GameCard.Control.Converter
             return path;
         }
 
-        private HashSet<Effect> GetEffectFromIds(HashSet<int> modelCardEffectsIds)
+        private Dictionary<string, Effect> GetEffectFromIds(Dictionary<string, int> modelCardEffectsIds)
         {
-            HashSet<Effect> result = new HashSet<Effect>();
-            foreach (var id in modelCardEffectsIds)
+            Dictionary<string, Effect> result = new Dictionary<string, Effect>();
+            foreach (var effectDb in modelCardEffectsIds)
             {
-                Effect effect = EffectManager.GetInstance().GetEffectById(id);
-                if (effect != null)
+                Effect effect = EffectManager.GetInstance().GetEffectById(effectDb.Value);
+                if (effect != null && !result.ContainsKey(effectDb.Key))
                 {
-                    result.Add(effect);
+                    result.Add(effectDb.Key, effect);
                 }
             }
 
             return result;
         }
 
-        private HashSet<int> GetEffectsIds(HashSet<Effect> cardEffects)
+        private Dictionary<string, int> GetEffectsIds(Dictionary<string, Effect> cardEffects)
         {
-            HashSet<int> result = new HashSet<int>();
+            Dictionary<string, int> result = new Dictionary<string, int>();
             foreach (var cardEffect in cardEffects)
             {
-                result.Add(cardEffect.Id);
+                if (!result.ContainsKey(cardEffect.Key))
+                {
+                    result.Add(cardEffect.Key, cardEffect.Value.Id);
+                }
             }
 
             return result;
