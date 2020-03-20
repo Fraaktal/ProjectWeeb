@@ -18,6 +18,7 @@ namespace ProjectWeeb.GameCard.Business
         private void InitializeBattleField()
         {
             Player1Side = new HashSet<CardPosition>();
+            Player2Side = new HashSet<CardPosition>();
 
             for (int i = 0; i < 4; i++)
             {
