@@ -10,12 +10,10 @@ namespace ProjectWeeb.GameCard.Business.ModelLiteDbClass
         public int Id { get; set; }
 
         public string UserName { get; set; }
-
-        public string MailAdress { get; set; }
-
+        
         public string Password { get; set; }
 
-        public string Level { get; set; }
+        public int Level { get; set; }
 
         public HashSet<int> DecksIds { get; set; }
 

@@ -11,7 +11,7 @@ namespace ProjectWeeb.GameCard.Business.ModelLiteDbClass
 
         public string Name { get; set; }
 
-        public HashSet<int> EffectsIds { get; set; }
+        public Dictionary<string,int> EffectsIds { get; set; }
 
         public string Base64Skin { get; set; }
     }

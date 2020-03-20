@@ -13,7 +13,7 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
 
         public string Name { get; set; }
 
-        public HashSet<Effect> Effects { get; set; }
+        public Dictionary<string,Effect> Effects { get; set; }
 
         public string ImagePath { get; set; }
     }

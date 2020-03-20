@@ -9,16 +9,15 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
     {
         public User()
         {
-
+            Decks = new HashSet<Deck>();
+            Cards = new List<Card>();
         }
 
         public string UserName { get; set; }
-
-        public string MailAdress { get; set; }
-
+        
         public string Password { get; set; }
 
-        public string Level { get; set; }
+        public int Level { get; set; }
 
         public HashSet<Deck> Decks { get; set; }
 

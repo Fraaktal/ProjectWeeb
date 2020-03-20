@@ -25,32 +25,32 @@ namespace ProjectWeeb.Communication
         /// <returns></returns>
         public async Task ConnectPlayer(Player player)
         {
-            await GameManager.GetInstance().LogInPlayer(player);
+            await GameManager.GetInstance().GameController.LogInPlayer(player);
         }
 
         public async Task DisconnectPlayer(Player player)
         {
-            await GameManager.GetInstance().DisconnectPlayer(player);
+            await GameManager.GetInstance().GameController.DisconnectPlayer(player);
         }
 
-        public async Task PlayCard(Player player, Card card, Location location)
+        public async Task PlayCard(Player player, Card card)
         {
-            await GameManager.GetInstance().PlayCard(player, card, location);
+            await GameManager.GetInstance().GameController.PlayCard(player, card);
         }
 
         public async Task DealDamageToOpponent(Card card, Player receiver)
         {
-            await GameManager.GetInstance().DealDamageToOpponent(card, receiver);
+            await GameManager.GetInstance().GameController.DealDamageToOpponent(card, receiver);
         }
         
         public async Task DealDamageToCard(Player receiver, Card cardDealer, Card cardReceiver)
         {
-            await GameManager.GetInstance().DealDamageToCard(receiver, cardDealer, cardReceiver);
+            await GameManager.GetInstance().GameController.DealDamageToCard(receiver, cardDealer, cardReceiver);
         }
 
         public async Task ActivateCardEffect(Card card, Effect effect)
         {
-            await GameManager.GetInstance().ActivateCardEffect(card, effect);
+            await GameManager.GetInstance().GameController.ActivateCardEffect(card, effect);
         }
     }
 }
