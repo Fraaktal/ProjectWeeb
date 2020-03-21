@@ -13,6 +13,6 @@ namespace ProjectWeeb.GameCard.Business.ModelLiteDbClass
 
         public Dictionary<string,int> EffectsIds { get; set; }
 
-        public string Base64Skin { get; set; }
+        public string ImagePath { get; set; }
     }
 }

@@ -14,7 +14,7 @@ namespace ProjectWeeb.GameCard.Control
             GameManager = gameManager;
 
             Connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:44382/GameHub")
+                .WithUrl("http://localhost:50322/GameHub")
                 .Build();
         }
 

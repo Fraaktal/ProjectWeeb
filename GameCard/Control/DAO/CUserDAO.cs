@@ -47,7 +47,7 @@ namespace ProjectWeeb.GameCard.Control.DAO
             }
         }
 
-        public User LogUser(string login, string password)
+        public User GetUserByLoginAndPassword(string login, string password)
         {
             using (var database = new LiteDatabase(WeebPathHelper.DatabasePath))
             {

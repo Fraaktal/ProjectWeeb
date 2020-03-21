@@ -26,7 +26,7 @@ namespace ProjectWeeb.GameCard.Control
 
         public bool TryLogUser(string login, string password)
         {
-            var result = CUserDAO.GetInstance().LogUser(login, password);
+            var result = CUserDAO.GetInstance().GetUserByLoginAndPassword(login, password);
 
             if (result != null)
             {
@@ -39,13 +39,9 @@ namespace ProjectWeeb.GameCard.Control
 
         public bool TryRegisterUser(string login, string password)
         {
-            User user = new User()
-            {
-                Password = password,
-                UserName = login,
-                Level = 1,
-                Cards = CardManager.GetInstance().GenerateWelcomingCard()
-            };
+            var cards = CardManager.GetInstance().GenerateWelcomingCard();
+
+            User user = new User(login, password, cards);
 
             if (!CUserDAO.GetInstance().DoesUserExist(login))
             {

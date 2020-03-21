@@ -20,7 +20,7 @@ namespace ProjectWeeb.GameCard.Control.Converter
             resultCard.Id = modelCard.Id;
             resultCard.Name = modelCard.Name;
             resultCard.Effects = GetEffectFromIds(modelCard.EffectsIds);
-            resultCard.ImagePath = SaveFileIfDoesNotExistAndGetPath(modelCard);
+            resultCard.ImagePath = modelCard.ImagePath;
 
             return resultCard;
         }
@@ -29,29 +29,12 @@ namespace ProjectWeeb.GameCard.Control.Converter
         {
             ModelCardLiteDb resultCard = new ModelCardLiteDb();
 
-            resultCard.Base64Skin = GetBase64SkinFromPath(card.ImagePath);
+            resultCard.ImagePath = card.ImagePath;
             resultCard.Id = card.Id;
             resultCard.Name = card.Name;
             resultCard.EffectsIds = GetEffectsIds(card.Effects);
 
             return resultCard;
-        }
-
-        private string SaveFileIfDoesNotExistAndGetPath(ModelCardLiteDb modelCard)
-        {
-            string path = Path.Combine("localpath", modelCard.Name, ".png"); // todo localpath
-
-            if (!File.Exists(path))
-            {
-                var bytes = Convert.FromBase64String(modelCard.Base64Skin);
-                using (var imageFile = new FileStream(path, FileMode.Create))
-                {
-                    imageFile.Write(bytes, 0, bytes.Length);
-                    imageFile.Flush();
-                }
-            }
-
-            return path;
         }
 
         private Dictionary<string, Effect> GetEffectFromIds(Dictionary<string, int> modelCardEffectsIds)
@@ -81,18 +64,6 @@ namespace ProjectWeeb.GameCard.Control.Converter
             }
 
             return result;
-        }
-
-        private string GetBase64SkinFromPath(string cardImagePath)
-        {
-            if (File.Exists(cardImagePath))
-            {
-                byte[] imageBytes = File.ReadAllBytes(cardImagePath);
-                string base64String = Convert.ToBase64String(imageBytes);
-                return base64String;
-            }
-
-            return null;
         }
     }
 }
