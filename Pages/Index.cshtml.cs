@@ -21,7 +21,7 @@ namespace ProjectWeeb.Pages
 
         public void OnGet()
         {
-            CWebSite.GetInstance().GameManager.GameCommunicator.Connect();
+
         }
     }
 }

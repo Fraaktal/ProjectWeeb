@@ -9,6 +9,14 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
 
         }
 
+        public Card(int id, string name, Dictionary<string, Effect> effects, string path)
+        {
+            CardId = id;
+            Name = name;
+            Effects = effects;
+            ImagePath = path;
+        }
+
         public int Id { get; set; }
 
         public int CardId { get; set; }

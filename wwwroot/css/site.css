@@ -5,26 +5,33 @@ for details on configuring this project to bundle and minify static web assets. 
     background-image: url('../src/projectweeb_buttons_gold.png');
 }
 
-#Inscription {
+/*#Inscription {
     background-image: url('../src/ProjectWeeb_Buttons_gold.png');
-    background-size:cover;
-    width: 25%;
-    height: 10%;
-    padding: 0;
-    text-align:center;
+    background-size: 20%;
+	background-position: center;
+	background-repeat: no-repeat;
 }
 
-#Inscription img{
-    object-fit:contain;
+#InscriptionContent{
+	text-align: center;
+	font-size: 40%;
+}*/
+
+.Button {
+	background-image: url('../src/ProjectWeeb_Buttons_gold.png');
+	background-size: cover;
+	padding: 20px 60px; /*important*/
+	font-size: 32px; /*important*/
+	text-align: center;
+	color: blue;
+	text-decoration: none;
+	display: inline-block;
+	cursor: pointer;
 }
 
-#Inscription a{
-    line-height:300px;
-}
-
-.logo_accueil {
-    background-image: url('../src/entropy_logo.png');
-}
+	.logo_accueil {
+		background-image: url('../src/entropy_logo.png');
+	}
 
 #background {
 	width: 100%;

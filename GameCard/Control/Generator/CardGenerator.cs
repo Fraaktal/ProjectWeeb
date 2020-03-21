@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ProjectWeeb.GameCard.Business.BusinessData;
 using ProjectWeeb.GameCard.Control.DAO;
+using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.GameCard.Control.Generator
 {
@@ -11,13 +9,9 @@ namespace ProjectWeeb.GameCard.Control.Generator
     {
         public CardGenerator()
         {
-            GameCards = CheckAndCreateCardIfInexistant();
             ExistingCards = InitializeExistingCards();
-
-            CardCreator = new CardCreator();
+            GameCards = CheckAndCreateCardIfInexistant();
         }
-
-        public CardCreator CardCreator { get; set; }
 
         public Dictionary<int, string> ExistingCards { get; }
         
@@ -62,12 +56,22 @@ namespace ProjectWeeb.GameCard.Control.Generator
 
                 if (card == null)
                 {
-                    card = CardCreator.CreateCardByIdAndName(existingcard.Key, existingcard.Value);
+                    card = CreateCardByIdAndName(existingcard.Key, existingcard.Value);
                     CCardDAO.GetInstance().SaveCard(card);
                 }
 
                 result.Add(card);
             }
+
+            return result;
+        }
+
+        public Card CreateCardByIdAndName(int id, string name)
+        {
+            string path = WeebResourceManager.GetInstance().GetCardImageByCardId(id);
+            var effects = EffectManager.GetInstance().GetEffectByCardId(id);
+
+            Card result = new Card(id, name, effects, path);
 
             return result;
         }
