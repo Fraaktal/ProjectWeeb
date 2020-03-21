@@ -10,7 +10,7 @@ namespace ProjectWeeb.Pages
         public void OnGet()
         {
 
-            GameManager.GetInstance().GameCommunicator.Connect();
+            CWebSite.GetInstance().GameManager.GameCommunicator.Connect();
         }
 
         public void OnPost()
@@ -18,7 +18,7 @@ namespace ProjectWeeb.Pages
             string login = Request.Form["login"];
             string password = Request.Form["password"];
 
-            var test = GameManager.GetInstance().GameCommunicator.Connection;
+            var test = CWebSite.GetInstance().GameManager.GameCommunicator.Connection;
 
             CWebSite.GetInstance().WebSiteManager.UserController.TryLogUser(login, password);
         }

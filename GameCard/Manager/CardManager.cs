@@ -30,5 +30,10 @@ namespace ProjectWeeb.GameCard.Manager
         {
             return null;
         }
+
+        public List<Card> GenerateWelcomingCard()
+        {
+            return null;
+        }
     }
 }

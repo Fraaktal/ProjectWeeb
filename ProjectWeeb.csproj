@@ -5,7 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ProjectResources\Cards\makise.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectResources\Cards\makise.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LiteDB" Version="5.0.1" />
+    <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.0" />
     <PackageReference Include="MySql.Data" Version="8.0.18" />
   </ItemGroup>

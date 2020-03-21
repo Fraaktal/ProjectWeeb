@@ -4,23 +4,11 @@ namespace ProjectWeeb.GameCard.Manager
 {
     public class GameManager
     {
-        private static GameManager _instance;
-
-        private GameManager()
+        public GameManager()
         {
-            GameCommunicator = new  GameCommunicator();
+            GameCommunicator = new GameCommunicator(this);
 
-            GameController = new GameController();
-        }
-
-        public static GameManager GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new GameManager();
-            }
-
-            return _instance;
+            GameController = new GameController(this);
         }
 
         public GameCommunicator GameCommunicator { get; set; }

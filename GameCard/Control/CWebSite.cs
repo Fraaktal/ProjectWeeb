@@ -14,6 +14,8 @@ namespace ProjectWeeb.GameCard.Control
         private CWebSite()
         {
             WebSiteManager = new WebSiteManager();
+
+            GameManager = new GameManager();
         }
         
         public static CWebSite GetInstance()
@@ -27,5 +29,7 @@ namespace ProjectWeeb.GameCard.Control
         }
 
         public WebSiteManager WebSiteManager { get; set; }
+
+        public GameManager GameManager { get; set; }
     }
 }

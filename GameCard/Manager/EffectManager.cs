@@ -29,5 +29,10 @@ namespace ProjectWeeb.GameCard.Manager
         {
             return null;
         }
+
+        public Dictionary<string, Effect> GetEffectByCardId(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

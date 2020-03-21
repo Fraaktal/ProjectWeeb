@@ -11,6 +11,8 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
 
         public int Id { get; set; }
 
+        public int CardId { get; set; }
+
         public string Name { get; set; }
 
         public Dictionary<string,Effect> Effects { get; set; }

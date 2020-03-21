@@ -1,5 +1,5 @@
 ﻿@page
-@using ProjectWeeb.GameCard.Manager
+@using ProjectWeeb.GameCard.Control
 @model ProjectWeeb.Pages.GamePlateauModel
 @{
     /*
@@ -13,5 +13,5 @@
 
         S'il un joueur est manquant, c'est le joueur restant qui est déclaré gagnant.    
      */
-    GameManager.GetInstance().GameCommunicator.Connect();
+    CWebSite.GetInstance().GameManager.GameCommunicator.Connect();
 }

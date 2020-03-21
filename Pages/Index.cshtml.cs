@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.Pages
 {
@@ -19,7 +20,7 @@ namespace ProjectWeeb.Pages
 
         public void OnGet()
         {
-
+            WeebResourceManager.GetInstance().ToString();
         }
     }
 }

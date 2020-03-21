@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using MySqlX.XDevAPI;
 using ProjectWeeb.GameCard.Business;
 using ProjectWeeb.GameCard.Business.BusinessData;
+using ProjectWeeb.GameCard.Control;
 using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.Communication
@@ -25,32 +21,32 @@ namespace ProjectWeeb.Communication
         /// <returns></returns>
         public async Task ConnectPlayer(Player player)
         {
-            await GameManager.GetInstance().GameController.LogInPlayer(player);
+            await CWebSite.GetInstance().GameManager.GameController.ConnectPlayer(player);
         }
 
         public async Task DisconnectPlayer(Player player)
         {
-            await GameManager.GetInstance().GameController.DisconnectPlayer(player);
+            await CWebSite.GetInstance().GameManager.GameController.DisconnectPlayer(player);
         }
 
         public async Task PlayCard(Player player, Card card)
         {
-            await GameManager.GetInstance().GameController.PlayCard(player, card);
+            await CWebSite.GetInstance().GameManager.GameController.PlayCard(player, card);
         }
 
         public async Task DealDamageToOpponent(Card card, Player receiver)
         {
-            await GameManager.GetInstance().GameController.DealDamageToOpponent(card, receiver);
+            await CWebSite.GetInstance().GameManager.GameController.DealDamageToOpponent(card, receiver);
         }
         
         public async Task DealDamageToCard(Player receiver, Card cardDealer, Card cardReceiver)
         {
-            await GameManager.GetInstance().GameController.DealDamageToCard(receiver, cardDealer, cardReceiver);
+            await CWebSite.GetInstance().GameManager.GameController.DealDamageToCard(receiver, cardDealer, cardReceiver);
         }
 
         public async Task ActivateCardEffect(Card card, Effect effect)
         {
-            await GameManager.GetInstance().GameController.ActivateCardEffect(card, effect);
+            await CWebSite.GetInstance().GameManager.GameController.ActivateCardEffect(card, effect);
         }
     }
 }

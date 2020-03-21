@@ -4,15 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using ProjectWeeb.GameCard.Business;
 using ProjectWeeb.GameCard.Business.BusinessData;
+using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.GameCard.Control
 {
     public class GameController
     {
-        public GameController()
+        public GameController(GameManager gameManager)
         {
             BattleField = new BattleField();
+
+            GameManager = gameManager;
         }
+
+        public GameManager GameManager { get; set; }
 
         public BattleField BattleField { get; set; }
 
@@ -38,7 +43,7 @@ namespace ProjectWeeb.GameCard.Control
             }
         }
 
-        public async Task LogInPlayer(Player player)
+        public async Task ConnectPlayer(Player player)
         {
             if (Player1 == null)
             {

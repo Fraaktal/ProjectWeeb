@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using MySqlX.XDevAPI;
 using Org.BouncyCastle.Asn1.Ocsp;
 using ProjectWeeb.GameCard.Business.BusinessData;
+using ProjectWeeb.GameCard.Control.DAO;
 using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.GameCard.Control
@@ -25,7 +26,7 @@ namespace ProjectWeeb.GameCard.Control
 
         public bool TryLogUser(string login, string password)
         {
-            var result = WebSiteManager.DatabaseController.LogUser(login, password);
+            var result = CUserDAO.GetInstance().LogUser(login, password);
 
             if (result != null)
             {
@@ -42,12 +43,13 @@ namespace ProjectWeeb.GameCard.Control
             {
                 Password = password,
                 UserName = login,
-                Level = 1
+                Level = 1,
+                Cards = CardManager.GetInstance().GenerateWelcomingCard()
             };
 
-            if (!WebSiteManager.DatabaseController.DoesUserExist(login))
+            if (!CUserDAO.GetInstance().DoesUserExist(login))
             {
-                WebSiteManager.DatabaseController.RegisterUser(user);
+                CUserDAO.GetInstance().RegisterUser(user);
 
                 return true;
             }
