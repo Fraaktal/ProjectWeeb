@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using MySqlX.XDevAPI;
-using Org.BouncyCastle.Asn1.Ocsp;
-using ProjectWeeb.GameCard.Business.BusinessData;
+﻿using ProjectWeeb.GameCard.Business.BusinessData;
 using ProjectWeeb.GameCard.Control.DAO;
 using ProjectWeeb.GameCard.Manager;
 

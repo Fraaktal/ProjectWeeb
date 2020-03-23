@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Collections.Generic;
 using ProjectWeeb.GameCard.Business.BusinessData;
 
 namespace ProjectWeeb.GameCard.Business
