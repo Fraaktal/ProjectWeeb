@@ -2,6 +2,11 @@
 @model ProjectWeeb.Pages.ConnectionModel
 @{
     <div class="container">
+
+        <div id="background">
+            <img src="/src/Accueil_background.png" class="stretch" alt="" />
+        </div>
+
         <form method="POST">
             <div>
                 <label for="login">Pseudonyme</label>
@@ -11,7 +16,7 @@
                 <label for="password">Mot de passe</label>
                 <input type="password" name="password" id="password" required />
             </div>
-            <input type="submit" value="Valider"/>
+            <input type="submit" value="Valider" />
         </form>
 
     </div>

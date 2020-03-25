@@ -12,6 +12,7 @@ namespace ProjectWeeb.Pages.Lolo
     {
         public void OnGet()
         {
+
         }
 
         public void OnPost()
@@ -27,6 +28,10 @@ namespace ProjectWeeb.Pages.Lolo
                 {
                     Response.Redirect("/Index");
                 }
+            }
+            else
+            {
+                
             }
             
             //TODO display errors
