@@ -16,8 +16,22 @@ for details on configuring this project to bundle and minify static web assets. 
 	color: white;
 	text-decoration: none;
 	display: inline-block;
-	
 }
+
+.Button_submit {
+	background: transparent;
+	border:none;
+	background-image: url('../src/ProjectWeeb_Buttons_gold.png');
+	background-size: cover;
+	padding: 5% 12%; /*important*/
+	font-size: 150%; /*important*/
+	text-align: center;
+	color: white;
+	text-decoration: none;
+	display: inline-block;
+}
+
+/*background:transparent*/
 
 .Button:hover {
 	color: white;
@@ -43,6 +57,12 @@ img {
 
 #item {
 	margin:auto;
+}
+
+#Formulaire {
+	border-radius: 5px;
+	background-color: rgba(74, 42, 4, 0.5); /*PlaceHolder for background-image*/
+	padding: 20px;
 }
 
 input[type=text], input[type=password] {
