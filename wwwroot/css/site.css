@@ -24,14 +24,12 @@ for details on configuring this project to bundle and minify static web assets. 
 	background-image: url('../src/ProjectWeeb_Buttons_gold.png');
 	background-size: cover;
 	padding: 5% 12%; /*important*/
-	font-size: 150%; /*important*/
+	font-size: 100%; /*important*/
 	text-align: center;
 	color: white;
 	text-decoration: none;
 	display: inline-block;
 }
-
-/*background:transparent*/
 
 .Button:hover {
 	color: white;
@@ -48,6 +46,7 @@ img {
 .container {
 	display: flex;
 	align-items: center;
+	justify-content:center;
 	text-align:center;
 	margin: auto;
 	margin-top: 10%;
