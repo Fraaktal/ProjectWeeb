@@ -10,7 +10,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private EffectManager()
         {
-
+            EffectsByIdCards = WeebResourceManager.GetInstance().GetEffectsByIdCardsFromFile();
         }
 
         public static EffectManager GetInstance()
@@ -23,14 +23,16 @@ namespace ProjectWeeb.GameCard.Manager
             return _instance;
         }
 
+        public Dictionary<int,HashSet<Effect>> EffectsByIdCards { get; set; }
+        
         public Effect GetEffectById(int id)
         {
             return null;
         }
 
-        public Dictionary<string, Effect> GetEffectByCardId(int id)
+        public HashSet<Effect> GetEffectsByCardId(int id)
         {
-            throw new NotImplementedException();
+            return EffectsByIdCards[id];
         }
     }
 }
