@@ -24,11 +24,6 @@ namespace ProjectWeeb.GameCard.Manager
         }
 
         public Dictionary<int,HashSet<Effect>> EffectsByIdCards { get; set; }
-        
-        public Effect GetEffectById(int id)
-        {
-            return null;
-        }
 
         public HashSet<Effect> GetEffectsByCardId(int id)
         {

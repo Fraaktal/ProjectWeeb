@@ -87,8 +87,7 @@ namespace ProjectWeeb.GameCard.Manager
                         }
                         else
                         {
-                            HashSet<Effect> efs = new HashSet<Effect>();
-                            efs.Add(effectbyIdCard.Value);
+                            HashSet<Effect> efs = new HashSet<Effect> {effectbyIdCard.Value};
                             result.Add(effectbyIdCard.Key,efs);
                         }
                     }
@@ -98,20 +97,23 @@ namespace ProjectWeeb.GameCard.Manager
             return result;
         }
 
+        //Formalisme : nomAttaque|descriptionAttaque|idAttaque|idCarte
         private KeyValuePair<int,Effect> ComputeLineToEffect(string line)
         {
             string[] values = line.Split("|");
-            if (values.Length == 4)
+            if (values.Length == 5)
             {
                 string name = values[0];
                 string description = values[1];
                 string idAttackS = values[2];
                 string idCardS = values[3];
+                string typeS = values[4];
 
                 int.TryParse(idAttackS, out int idAttack);
                 int.TryParse(idCardS, out int idCard);
+                int.TryParse(typeS, out int type);
 
-                Effect effect = new Effect(name,description,idAttack);
+                Effect effect = new Effect(name,description,idAttack, (Effect.TypeOfEffect)type);
                 return new KeyValuePair<int, Effect>(idCard, effect);
             }
 
