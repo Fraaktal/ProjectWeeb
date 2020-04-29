@@ -11,40 +11,42 @@ namespace ProjectWeeb.GameCard.Business
             InitializeBattleField();
         }
 
-        public HashSet<CardPosition> Player1Side { get; set; }
+        public HashSet<CardPosition> CurrentPlayerSide { get; set; }
 
-        public HashSet<CardPosition> Player2Side { get; set; }
+        public HashSet<CardPosition> EnnemySide { get; set; }
+
+        public BattleField PreviousBattlefield { get; set; }
 
         private void InitializeBattleField()
         {
-            Player1Side = new HashSet<CardPosition>();
-            Player2Side = new HashSet<CardPosition>();
+            CurrentPlayerSide = new HashSet<CardPosition>();
+            EnnemySide = new HashSet<CardPosition>();
 
             for (int i = 0; i < 4; i++)
             {
-                Player1Side.Add(new CardPosition(i, 1));
-                Player2Side.Add(new CardPosition(i, 1));
+                CurrentPlayerSide.Add(new CardPosition(i, 1));
+                EnnemySide.Add(new CardPosition(i, 1));
             }
 
             for (int i = 0; i < 6; i++)
             {
-                Player1Side.Add(new CardPosition(i, 1));
-                Player2Side.Add(new CardPosition(i, 1));
+                CurrentPlayerSide.Add(new CardPosition(i, 1));
+                EnnemySide.Add(new CardPosition(i, 1));
             }
         }
 
-        public void SetCardForPlayer1(Card card, int x, int y)
+        public void SetCardForCurrentPlayer(Card card, int x, int y)
         {
-            var position = Player1Side.FirstOrDefault(p => p.X == x && p.Y == y);
+            var position = CurrentPlayerSide.FirstOrDefault(p => p.X == x && p.Y == y);
             if (position != null)
             {
                 position.Card = card;
             }
         }
         
-        public void SetCardForPlayer2(Card card, int x, int y)
+        public void SetCardForEnnemy(Card card, int x, int y)
         {
-            var position = Player2Side.FirstOrDefault(p => p.X == x && p.Y == y);
+            var position = EnnemySide.FirstOrDefault(p => p.X == x && p.Y == y);
             if (position != null)
             {
                 position.Card = card;
@@ -53,20 +55,61 @@ namespace ProjectWeeb.GameCard.Business
 
         public void UnsetCardForPlayer1(int x, int y)
         {
-            var position = Player1Side.FirstOrDefault(p => p.X == x && p.Y == y);
+            var position = CurrentPlayerSide.FirstOrDefault(p => p.X == x && p.Y == y);
             if (position != null)
             {
                 position.Card = null;
             }
         }
         
-        public void UnsetCardForPlayer2(int x, int y)
+        public void UnsetCardForEnnemy(int x, int y)
         {
-            var position = Player2Side.FirstOrDefault(p => p.X == x && p.Y == y);
+            var position = EnnemySide.FirstOrDefault(p => p.X == x && p.Y == y);
             if (position != null)
             {
                 position.Card = null;
             }
+        }
+
+        public Card GetEnnemyCard(CardPosition cardPosition)
+        {
+            return EnnemySide.FirstOrDefault(cp => cp.X == cardPosition.X && cp.Y == cardPosition.Y)?.Card;
+        }
+
+        public Card GetPlayerCard(CardPosition cardPosition)
+        {
+            return CurrentPlayerSide.FirstOrDefault(cp => cp.X == cardPosition.X && cp.Y == cardPosition.Y)?.Card;
+        }
+
+        public List<CardPosition> GetEnnemyCardColumn(CardPosition cardPosition)
+        {
+            List<CardPosition> result = new List<CardPosition>();
+            foreach (var cp in EnnemySide)
+            {
+                if (cp.X == cardPosition.X)
+                {
+                    result.Add(cp);
+                }
+            }
+
+            return result;
+        }
+
+        public List<CardPosition> GetHalfEnnemies()
+        {
+            List<CardPosition> result = new List<CardPosition>();
+
+            for (int i = 0; i < EnnemySide.Count; i += 2)
+            {
+                result.Add(EnnemySide.ElementAt(i));
+            }
+
+            return result;
+        }
+
+        public Card GetEnnemyCardByPosition(int x, int y)
+        {
+            return EnnemySide.FirstOrDefault(cp => cp.X == x && cp.Y == y)?.Card;
         }
     }
 }

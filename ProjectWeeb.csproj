@@ -6,10 +6,12 @@
 
   <ItemGroup>
     <None Remove="ProjectResources\Cards\makise.png" />
+    <None Remove="ProjectResources\Effects\EffectsList.eft" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="ProjectResources\Cards\makise.png" />
+    <EmbeddedResource Include="ProjectResources\Effects\EffectsList.eft" />
   </ItemGroup>
 
   <ItemGroup>

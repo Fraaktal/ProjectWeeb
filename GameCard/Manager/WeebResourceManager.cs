@@ -79,17 +79,28 @@ namespace ProjectWeeb.GameCard.Manager
                 {
                     using (StreamReader sr = new StreamReader(stream))
                     {
-                        string line = sr.ReadLine();
-                        var effectbyIdCard = ComputeLineToEffect(line);
-                        if (result.ContainsKey(effectbyIdCard.Key))
+                        string line;
+
+                        while ((line = sr.ReadLine()) != null)
                         {
-                            result[effectbyIdCard.Key].Add(effectbyIdCard.Value);
+                            var effectbyIdCard = ComputeLineToEffect(line);
+
+                            if (effectbyIdCard.Key == -1)
+                            {
+                                continue;
+                            }
+                            
+                            if (result.ContainsKey(effectbyIdCard.Key))
+                            {
+                                result[effectbyIdCard.Key].Add(effectbyIdCard.Value);
+                            }
+                            else
+                            {
+                                HashSet<Effect> efs = new HashSet<Effect> { effectbyIdCard.Value };
+                                result.Add(effectbyIdCard.Key, efs);
+                            }
                         }
-                        else
-                        {
-                            HashSet<Effect> efs = new HashSet<Effect> {effectbyIdCard.Value};
-                            result.Add(effectbyIdCard.Key,efs);
-                        }
+                        
                     }
                 }
             }
@@ -117,7 +128,7 @@ namespace ProjectWeeb.GameCard.Manager
                 return new KeyValuePair<int, Effect>(idCard, effect);
             }
 
-            return new KeyValuePair<int, Effect>();
+            return new KeyValuePair<int, Effect>(-1,null);
         }
     }
 }

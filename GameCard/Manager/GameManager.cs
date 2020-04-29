@@ -9,6 +9,13 @@ namespace ProjectWeeb.GameCard.Manager
             GameCommunicator = new GameCommunicator(this);
 
             GameController = new GameController(this);
+
+            InitializeLoad();
+        }
+
+        private void InitializeLoad()
+        {
+            CardManager.GetInstance().GenerateRandomCard();
         }
 
         public GameCommunicator GameCommunicator { get; set; }
