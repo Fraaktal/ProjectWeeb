@@ -34,7 +34,7 @@ namespace ProjectWeeb.GameCard.Manager
                 {2, SeeleAttack},
                 {3, Joker_All_Out_Attack},
                 {4, IronMan_Rayon_laser},
-                {5, IronMan_Rayon_laser_And_I_am_Iron_Man},
+                {5, IronMan_And_I_am_Iron_Man},
                 {6, IronMan_Bleeding_Edge_Armor},
                 {7, SaikiKusuo_Retour_arriere},
                 {8, Kira_Death_note},
@@ -63,7 +63,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void BasicAttack(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.GetEnnemyCard(arg2).Life -= 1;
+            BattleField.GetEnnemyCard(arg2).Life -= arg1.Stength;
         }
 
         private void Megumin_Explosioooon(CardPosition arg1, CardPosition arg2)
@@ -74,7 +74,10 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void SeeleAttack(CardPosition arg1, CardPosition arg2)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < 2; i++)
+            {
+                BasicAttack(arg1, arg2);
+            }
         }
 
         private void Joker_All_Out_Attack(CardPosition arg1, CardPosition arg2)
@@ -95,7 +98,7 @@ namespace ProjectWeeb.GameCard.Manager
             }
         }
 
-        private void IronMan_Rayon_laser_And_I_am_Iron_Man(CardPosition arg1, CardPosition arg2)
+        private void IronMan_And_I_am_Iron_Man(CardPosition arg1, CardPosition arg2)
         {
             List<CardPosition> cards = BattleField.GetHalfEnnemies();
 
@@ -150,12 +153,12 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void Pikachu_Pika_pika(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.GetEnnemyCard(arg2).CurrentStatus = Card.Status.Sleeping;
+            BattleField.GetEnnemyCard(arg2).CurrentStatus = Card.Status.Confuse;
         }
 
         private void Pikachu_Tonerre(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.GetEnnemyCard(arg2).Life -= 3;
+            BattleField.GetEnnemyCard(arg2).Life -= arg1.Strength + 3;
         }
 
         private void Sonic_Attaque_rapide(CardPosition arg1, CardPosition arg2)
@@ -187,7 +190,7 @@ namespace ProjectWeeb.GameCard.Manager
         private void Shiro_Puissance_random(CardPosition arg1, CardPosition arg2)
         {
             Random rand = new Random();
-            int power = (int)rand.NextDouble() * 6;
+            int power = (int)rand.NextDouble() * 6 + 1;
             BattleField.GetEnnemyCard(arg2).Life -= power;
         }
 

@@ -19,9 +19,9 @@ namespace ProjectWeeb.GameCard.Control
 
         public BattleField BattleField { get; set; }
 
-        public Player Player1 { get; set; }
+        public Player CurrentPlayer { get; set; }
 
-        public Player Player2 { get; set; }
+        public Player Ennemy { get; set; }
 
         public Player CurrentTurnPlayer { get; set; }
 
@@ -32,24 +32,24 @@ namespace ProjectWeeb.GameCard.Control
 
         public void StartGame()
         {
-            while (Player1.Hp > 0 && Player2.Hp > 0)
+            while (CurrentPlayer.Hp > 0 && Ennemy.Hp > 0)
             {
                 // On choisi le premier current player en random
 
                 // Au tour du joueur suivante
-                CurrentTurnPlayer = CurrentTurnPlayer == Player1 ? Player2 : Player1;
+                CurrentTurnPlayer = CurrentTurnPlayer == CurrentPlayer ? Ennemy : CurrentPlayer;
             }
         }
 
         public async Task ConnectPlayer(Player player)
         {
-            if (Player1 == null)
+            if (CurrentPlayer == null)
             {
-                Player1 = player;
+                CurrentPlayer = player;
             }
-            else if (Player2 == null)
+            else if (Ennemy == null)
             {
-                Player2 = player;
+                Ennemy = player;
             }
             else
             {
@@ -59,41 +59,14 @@ namespace ProjectWeeb.GameCard.Control
 
         public async Task DisconnectPlayer(Player player)
         {
-            if (Player1.Equals(player))
+            if (CurrentPlayer.Equals(player))
             {
-                Player1 = null;
+                CurrentPlayer = null;
             }
-            else if (Player2.Equals(player))
+            else if (Ennemy.Equals(player))
             {
-                Player2 = null;
+                Ennemy = null;
             }
-        }
-
-        public async Task PlayCard(Player player, Card card/*Location location*/)
-        {
-
-        }
-
-        public async Task DealDamageToOpponent(Card card, Player receiver)
-        {
-            if (Player1.Equals(receiver))
-            {
-
-            }
-            else if (Player2.Equals(receiver))
-            {
-                Player2 = null;
-            }
-        }
-
-        public async Task DealDamageToCard(Player receiver, Card cardDealer, Card cardReceiver)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task ActivateCardEffect(Card card, Effect effect)
-        {
-            throw new NotImplementedException();
         }
     }
 }
