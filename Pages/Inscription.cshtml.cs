@@ -26,7 +26,7 @@ namespace ProjectWeeb.Pages.Lolo
 
                 if (result)
                 {
-                    Response.Redirect("/Index");
+                    Response.Redirect("/Connexion");
                 }
             }
             else

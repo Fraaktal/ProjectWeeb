@@ -17,7 +17,11 @@ namespace ProjectWeeb.Pages
             string login = Request.Form["login"];
             string password = Request.Form["password"];
             
-            CWebSite.GetInstance().WebSiteManager.UserController.TryLogUser(login, password);
+            bool result = CWebSite.GetInstance().WebSiteManager.UserController.TryLogUser(login, password);
+            if (result)
+            {
+                Response.Redirect("/Profile");
+            }
         }
 
         

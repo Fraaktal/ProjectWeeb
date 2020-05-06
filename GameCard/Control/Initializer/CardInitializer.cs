@@ -27,7 +27,7 @@ namespace ProjectWeeb.GameCard.Control.Initializer
             {
                 var card = CreateCardByIdAndName(cardById.Key, cardById.Value);
 
-                result.Add(card.Id,card);
+                result.Add(card.CardId,card);
             }
 
             return result;
