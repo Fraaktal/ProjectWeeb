@@ -3,22 +3,23 @@
 @{
     <div class="container">
         <div id="background">
-            <img src="/src/" class="stretch" alt="" />
+            <img src="~/src/Background2.png" class="stretch" alt="" />
         </div>
 
         <!--Left top level corner -->
-        <div> <!--Put img as background in css, get Username and Level/rank from DB-->
+        <div id="Corner">
+            <!--Put img as background in css, get Username and Level/rank from DB-->
             level
         </div>
 
         <!--Middle game button set-->
         <div>
-            <button id="PopUP" value="Game" onclick="window.open('PopUp.cshtml','popup','width=700,height=400,left=200,top=200')"></button>
+            <button id="PopUP" class="Button" onclick="window.open('MatchingPopUp','popup','width=700,height=400,left=200,top=200')">Game</button>
             <a asp-area="" asp-page="" class="Button">Cards</a>
             <a asp-area="" asp-page="" class="Button">Decks</a>
 
         </div>
-        
+
         <!--Bottom right option corner-->
         <div>
             <div class="bouton-aligne">

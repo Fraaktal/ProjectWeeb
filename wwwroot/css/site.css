@@ -8,6 +8,8 @@ for details on configuring this project to bundle and minify static web assets. 
 
 
 .Button {
+	background: transparent;
+	border: none;
 	background-image: url('../src/ProjectWeeb_Buttons_gold.png');
 	background-size: cover;
 	padding: 5% 12%; /*important*/
@@ -18,11 +20,16 @@ for details on configuring this project to bundle and minify static web assets. 
 	display: inline-block;
 }
 
-.bouton-aligne {
+ .bouton-aligne {
 	display: inline-block;
 	width: 45%;
 	margin: 10px 2.5% 10px 2.5%;
 	text-align: center;
+}
+
+.Form { /*set size*/
+	background-image: url('../src/connect.png');
+	background-size:cover;
 }
 
 .Button_submit {
@@ -49,6 +56,9 @@ img {
 	width: 30%;
 }
 
+#Corner {
+	background-image: url('../src/corner.png');
+}
 
 .container {
 	display: flex;
