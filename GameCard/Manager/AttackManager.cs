@@ -63,7 +63,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void BasicAttack(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.GetEnnemyCard(arg2).Life -= arg1.Stength;
+            BattleField.GetEnnemyCard(arg2).Life -= arg1.Card.Strength;
         }
 
         private void Megumin_Explosioooon(CardPosition arg1, CardPosition arg2)
@@ -158,7 +158,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void Pikachu_Tonerre(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.GetEnnemyCard(arg2).Life -= arg1.Strength + 3;
+            BattleField.GetEnnemyCard(arg2).Life -= arg1.Card.Strength + 3;
         }
 
         private void Sonic_Attaque_rapide(CardPosition arg1, CardPosition arg2)

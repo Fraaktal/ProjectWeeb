@@ -6,7 +6,7 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
     {
         public enum Status
         {
-            InHand,InDeck,Waiting,Charging,Disabled,Sleeping // A compléter au fur et a mesure
+            InHand, InDeck, Waiting, Charging, Disabled, Sleeping ,Confuse
         }
 
         public Card()
@@ -39,5 +39,7 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
         public int Life { get; set; }
 
         public int Shield { get; set; }
+
+        public int Strength { get; set; }
     }
 }
