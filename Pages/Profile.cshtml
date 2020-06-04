@@ -1,5 +1,6 @@
 ﻿@page
-@model ProjectWeeb.ProfileModel
+@using ProjectWeeb.GameCard.Control
+@model ProjectWeeb.Pages.ProfileModel
 @{
     <div class="container">
         <div id="background">
@@ -11,15 +12,17 @@
             <!--Put img as background in css, get Username and Level/rank from DB-->
             level
         </div>
-
+        
         <!--Middle game button set-->
-        <div style="width:100%; height:100%">
-            <button id="PopUP" class="Button" onclick="window.open('MatchingPopUp','popup','width=700,height=400,left=200,top=200')">Game</button>
-            <br/>
-            <a asp-area="" asp-page="/GamePlateau" class="Button">Cards</a>
-            <br/>
-            <a asp-area="" asp-page="" class="Button">Decks</a>
+        <div style="width: 100%; height: 100%">
+            
+            <form asp-page-handler="matchMaking" method="post">
+                <button id="PopUP" class="Button">Game</button>
+            </form>
 
+            <a asp-area="" asp-page="" class="Button">Cards</a>
+
+            <a asp-area="" asp-page="" class="Button">Decks</a>
         </div>
 
         <!--Bottom right option corner-->

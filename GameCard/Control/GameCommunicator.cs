@@ -10,9 +10,17 @@ namespace ProjectWeeb.GameCard.Control
         {
             GameManager = gameManager;
 
+            //TODO changer par la prod
             Connection = new HubConnectionBuilder()
                 .WithUrl("http://localhost:50322/GameHub")
                 .Build();
+
+#if DEBUG
+            Connection = new HubConnectionBuilder()
+                .WithUrl("http://localhost:50322/GameHub")
+                .Build();
+#endif
+
         }
 
         public HubConnection Connection { get; set; }

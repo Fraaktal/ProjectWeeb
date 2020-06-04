@@ -19,6 +19,8 @@ namespace ProjectWeeb.GameCard.Control.Converter
             resultUser.Decks = GetDecksByIds(modelUser.DecksIds);
             resultUser.Cards = GetCardsByIds(modelUser.CardsIds);
             resultUser.Level = modelUser.Level;
+            resultUser.Id = modelUser.Id;
+            resultUser.SelectedDeck = DeckManager.GetInstance().GetDeckById(modelUser.SelectedDeckId);
 
             return resultUser;
         }
@@ -32,6 +34,7 @@ namespace ProjectWeeb.GameCard.Control.Converter
             resultUser.DecksIds = GetDecksIds(user.Decks);
             resultUser.CardsIds = GetCardsIds(user.Cards);
             resultUser.Level = user.Level;
+            resultUser.SelectedDeckId = user.SelectedDeck?.Id ?? -1;
 
             return resultUser;
         }

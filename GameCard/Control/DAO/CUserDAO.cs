@@ -37,6 +37,8 @@ namespace ProjectWeeb.GameCard.Control.DAO
 
                 var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
 
+                //AUTOMATE ID
+
                 col.EnsureIndex(x => x.Id, true);
 
                 col.Insert(modelUserLiteDb);

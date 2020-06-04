@@ -19,7 +19,9 @@ namespace ProjectWeeb.GameCard.Manager
         {
             get
             {
-                return CWebSite.GetInstance().GameManager.GameController.BattleField;
+                //return CWebSite.GetInstance().GameManager.GameController.BattleField;
+
+                return null;
             }
         }
 

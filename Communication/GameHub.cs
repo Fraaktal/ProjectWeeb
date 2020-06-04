@@ -9,22 +9,15 @@ namespace ProjectWeeb.Communication
     {
         public async Task SendMessage(string user, string message)
         {
+            // Context.ConnectionId; Id de l'appelant
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
-
-        /// <summary>
-        /// Essaie de connecter le player au jeu
-        /// </summary>
-        /// <param name="player">Joueur à connecter</param>
-        /// <returns></returns>
-        public async Task ConnectPlayer(Player player)
+        
+        public async Task AskforQueue(int id)
         {
-            await CWebSite.GetInstance().GameManager.GameController.ConnectPlayer(player);
+            // Context.ConnectionId; Id de l'appelant
         }
 
-        public async Task DisconnectPlayer(Player player)
-        {
-            await CWebSite.GetInstance().GameManager.GameController.DisconnectPlayer(player);
-        }
+        
     }
 }

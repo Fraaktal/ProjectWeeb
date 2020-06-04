@@ -26,5 +26,8 @@ namespace ProjectWeeb.GameCard.Control
         public WebSiteManager WebSiteManager { get; set; }
 
         public GameManager GameManager { get; set; }
+
+        public int Value { get; set; }
+
     }
 }

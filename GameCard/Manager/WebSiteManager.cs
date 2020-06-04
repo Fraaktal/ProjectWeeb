@@ -11,7 +11,5 @@ namespace ProjectWeeb.GameCard.Manager
         }
 
         public UserController UserController { get; set; }
-
-        public User CurrentUser { get; set; }
     }
 }

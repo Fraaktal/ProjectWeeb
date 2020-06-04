@@ -1,4 +1,6 @@
-﻿using ProjectWeeb.GameCard.Business.BusinessData;
+﻿using System.Collections.Generic;
+using System.Net;
+using ProjectWeeb.GameCard.Business.BusinessData;
 using ProjectWeeb.GameCard.Control.DAO;
 using ProjectWeeb.GameCard.Manager;
 
@@ -13,24 +15,18 @@ namespace ProjectWeeb.GameCard.Control
 
         public WebSiteManager WebSiteManager { get; set; }
 
-        public bool TryLogUser(string login, string password)
+        public User TryLogUser(string login, string password)
         {
             var result = CUserDAO.GetInstance().GetUserByLoginAndPassword(login, password);
 
-            if (result != null)
-            {
-                WebSiteManager.CurrentUser = result;
-                return true;
-            }
-
-            return false;
+            return result;
         }
 
         public bool TryRegisterUser(string login, string password)
         {
             var cards = CardManager.GetInstance().GenerateWelcomingCard();
 
-            User user = new User(login, password, cards);
+            User user = new User(login, password, -1, cards, new HashSet<Deck>());
 
             if (!CUserDAO.GetInstance().DoesUserExist(login))
             {

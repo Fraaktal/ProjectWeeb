@@ -15,5 +15,7 @@ namespace ProjectWeeb.GameCard.Business.ModelLiteDbClass
         public HashSet<int> DecksIds { get; set; }
 
         public List<int> CardsIds { get; set; }
+
+        public int SelectedDeckId { get; set; }
     }
 }
