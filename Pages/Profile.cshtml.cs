@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,11 +18,23 @@ namespace ProjectWeeb.Pages
 
         public int UserId { get; set; }
         
-        public void OnPostMatchMaking()
+        public async Task<IActionResult> OnPostGamePlateau()
         {
-            Response.Redirect("/MatchingQueue");
+            //Ajouter une alert pour dire recherche de partie en cours
+
+            string s = HttpContext.Session.GetString("user");
+            User user = JsonConvert.DeserializeObject<User>(s);
+            string idGame = null;
+            while (idGame == null)
+            {
+                idGame = CWebSite.GetInstance().GameManager.ConnectPlayerToGame(user);
+                if (idGame == null)
+                {
+                    Thread.Sleep(10000);
+                }
+            }
+
+            return RedirectToPage("GamePlateau", "ids", new {id = idGame, userId = user.Id});
         }
-
-
     }
 }

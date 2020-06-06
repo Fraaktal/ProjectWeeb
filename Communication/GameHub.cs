@@ -13,11 +13,9 @@ namespace ProjectWeeb.Communication
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
         
-        public async Task AskforQueue(int id)
+        public async Task PlayerConnectedOnGame(string idGame)
         {
             // Context.ConnectionId; Id de l'appelant
         }
-
-        
     }
 }

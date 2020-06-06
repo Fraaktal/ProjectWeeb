@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Timers;
 using ProjectWeeb.GameCard.Business;
+using ProjectWeeb.GameCard.Business.BusinessData;
 using ProjectWeeb.GameCard.Control;
 using ProjectWeeb.GameCard.EventArg;
 
@@ -14,40 +16,17 @@ namespace ProjectWeeb.GameCard.Manager
 
         public GameManager()
         {
-            WaitingPlayers  = new HashSet<Tuple<DateTime, Player>>();
-
-            Games = new HashSet<Game>();
-
-            GameCommunicator = new GameCommunicator(this);
+            Games = new List<Game>();
 
             GameController = new GameController(this);
-            
-            SetTimer();
         }
 
         //ECOUTE DEVENT POUR CONNECTER LES PLAYER? LISTENCONTROLLER EVENT UNLISTENCONTROLLEREVENT
 
-        public HashSet<Tuple<DateTime,Player>> WaitingPlayers { get; set; }
 
-        public HashSet<Game> Games { get; set; }
-
-        public GameCommunicator GameCommunicator { get; set; }
+        public List<Game> Games { get; set; }
 
         public GameController GameController { get; set; }
-        
-        private Timer Timer { get; set; }
-
-        private void SetTimer()
-        {
-            // Create a timer with a two second interval.
-            Timer = new Timer(10000);
-
-            // Hook up the Elapsed event for the timer. 
-            Timer.Elapsed += LaunchGames;
-            Timer.AutoReset = true;
-            Timer.Enabled = true;
-
-        }
 
         private void ListenControllerEvent()
         {
@@ -59,25 +38,41 @@ namespace ProjectWeeb.GameCard.Manager
 
         }
 
-        public void ConnectPlayerToQueue(Player player)
+        public string ConnectPlayerToGame(User user)
         {
-            Tuple<DateTime,Player> p = new Tuple<DateTime, Player>(DateTime.Now, player);
-            WaitingPlayers.Add(p);
+
+            Player player = new Player(user.UserName, user.Level, user.Id, user.SelectedDeck);
+
+            string id = TryJoinGame(player);
+            if (id == null && Games.Count < 10)
+            {
+                id = GenerateGameId();
+                Game game = new Game(player, id);
+                Games.Add(game);
+            }
+
+            return id;
         }
 
-        private void LaunchGames(object sender, ElapsedEventArgs e)
+        private string TryJoinGame(Player player)
         {
-             var gamesToAdd = MatchMakingHelper.MakeGameFromWaitingQueue(WaitingPlayers, Games.Count);
-
-            foreach (var gameToAdd in gamesToAdd)
+            foreach (var game in Games)
             {
-                Games.Add(gameToAdd);
-
-
-                WaitingPlayers.RemoveWhere(t => t.Item2 == gameToAdd.Player1 || t.Item2 == gameToAdd.Player2);
-                
-                PlayerConnectedToGame?.Invoke(this,null);
+                if (game.Player2 == null)
+                {
+                    game.JoinPlayer(player);
+                    return game.GameId;
+                }
             }
+
+            return null;
+        }
+
+        private string GenerateGameId()
+        {
+            Random random = new Random();
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

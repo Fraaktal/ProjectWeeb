@@ -7,7 +7,7 @@ namespace ProjectWeeb.Pages
     {
         public void OnGet()
         {
-            var test = CWebSite.GetInstance().GameManager.GameCommunicator.Connection;
+
         }
 
         public void OnPost()

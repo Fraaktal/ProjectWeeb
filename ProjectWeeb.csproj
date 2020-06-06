@@ -5,12 +5,43 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ProjectResources\Cards\makise.png" />
+    <None Remove="ProjectResources\Cards\0.png" />
+    <None Remove="ProjectResources\Cards\1.png" />
+    <None Remove="ProjectResources\Cards\10.png" />
+    <None Remove="ProjectResources\Cards\11.png" />
+    <None Remove="ProjectResources\Cards\13.png" />
+    <None Remove="ProjectResources\Cards\14.png" />
+    <None Remove="ProjectResources\Cards\15.png" />
+    <None Remove="ProjectResources\Cards\16.png" />
+    <None Remove="ProjectResources\Cards\17.png" />
+    <None Remove="ProjectResources\Cards\18.png" />
+    <None Remove="ProjectResources\Cards\19.png" />
+    <None Remove="ProjectResources\Cards\3.png" />
+    <None Remove="ProjectResources\Cards\5.png" />
+    <None Remove="ProjectResources\Cards\6.png" />
+    <None Remove="ProjectResources\Cards\7.png" />
+    <None Remove="ProjectResources\Cards\8.png" />
+    <None Remove="ProjectResources\Cards\9.png" />
     <None Remove="ProjectResources\Effects\EffectsList.eft" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ProjectResources\Cards\makise.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\0.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\1.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\10.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\11.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\13.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\14.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\15.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\16.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\17.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\18.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\19.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\3.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\5.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\6.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\8.png" />
+    <EmbeddedResource Include="ProjectResources\Cards\9.png" />
     <EmbeddedResource Include="ProjectResources\Effects\EffectsList.eft" />
   </ItemGroup>
 
@@ -19,6 +50,10 @@
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectResources\Cards\7.png" />
   </ItemGroup>
 
 

@@ -11,6 +11,7 @@ namespace ProjectWeeb.GameCard.Business
             Level = level;
             IdUser = idUser;
             SelectedDeck = deck;
+            Hp = 20;
             DrawPile = new HashSet<Card>(); 
             CurrentHand = new HashSet<Card>();
         }

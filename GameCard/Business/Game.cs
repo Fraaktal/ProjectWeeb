@@ -12,25 +12,33 @@ namespace ProjectWeeb.GameCard.Business
             Player1 = p1;
             Player2 = p2;
             GameId = gameId;
+            Date = DateTime.Now;
+
+            BattleField = new BattleField();
+            ListenControllerEvent();
+        }
+        
+        public Game(Player p1, string gameId)
+        {
+            Player1 = p1;
+            GameId = gameId;
+            Date = DateTime.Now;
+
+            BattleField = new BattleField();
+            ListenControllerEvent();
         }
 
-        public string GameId { get; set; }
+        
 
         public Player Player1 { get; set; }
 
         public Player Player2 { get; set; }
 
+        public string GameId { get; set; }
+
+        public DateTime Date { get; set; }
+        
         public BattleField BattleField { get; set; }
-
-        public void InitializeGame()
-        {
-            Player1.Hp = 20;
-            Player2.Hp = 20;
-
-            BattleField = new BattleField();
-
-            ListenControllerEvent();
-        }
 
         public void EndGame()
         {
@@ -45,6 +53,12 @@ namespace ProjectWeeb.GameCard.Business
         public void UnListenControllerEvent()
         {
             //DESECOUTE
+        }
+
+        public void JoinPlayer(Player player)
+        {
+            Player2 = player;
+            //TODO INFORM
         }
     }
 }
