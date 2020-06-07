@@ -74,5 +74,41 @@ namespace ProjectWeeb.GameCard.Manager
             const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
         }
+
+        public string GetEnnemyConnectionId(string gameId, int idUser)
+        {
+            Game game = Games.FirstOrDefault(g => g.GameId == gameId);
+
+            if (game != null)
+            {
+                if (game.Player1?.IdUser == idUser && game.Player2 != null)
+                {
+                    return game.Player2.ConnectionId;
+                }
+                else if (game.Player2?.IdUser == idUser && game.Player1 != null)
+                {
+                    return game.Player1.ConnectionId;
+                }
+            }
+
+            return null;
+        }
+
+        public void RegisterConnectionId(int idUser, string gameId, string contextConnectionId)
+        {
+            Game game = Games.FirstOrDefault(g => g.GameId == gameId);
+
+            if (game != null)
+            {
+                if (game.Player1.IdUser == idUser)
+                {
+                    game.Player1.ConnectionId = contextConnectionId;
+                }
+                else
+                {
+                    game.Player2.ConnectionId = contextConnectionId;
+                }
+            }
+        }
     }
 }

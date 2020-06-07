@@ -30,5 +30,6 @@ namespace ProjectWeeb.GameCard.Business
 
         public HashSet<Card> DrawPile { get; set; }
 
+        public string ConnectionId { get; set; }
     }
 }

@@ -34,7 +34,7 @@ namespace ProjectWeeb.Pages
                 }
             }
 
-            return RedirectToPage("GamePlateau", "ids", new {id = idGame, userId = user.Id});
+            return RedirectToPage("GamePlateau", "ids", new {gameId = idGame, userId = user.Id});
         }
     }
 }

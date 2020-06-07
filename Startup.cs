@@ -58,6 +58,8 @@ namespace ProjectWeeb
 
             app.UseAuthorization();
 
+            app.UseAuthentication();
+
             app.UseSession();
 
             app.UseEndpoints(endpoints =>
