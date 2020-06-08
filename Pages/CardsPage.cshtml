@@ -1,0 +1,44 @@
+﻿@page
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Routing
+@using Newtonsoft.Json
+@using ProjectWeeb.GameCard.Business.BusinessData
+@using ProjectWeeb.GameCard.Control
+@using ProjectWeeb.GameCard.Manager
+@model ProjectWeeb.Pages.CardsPageModel
+@{
+    ViewData["Title"] = "CardsPage";
+}
+
+    <h1>CardsPage</h1>
+
+    <div class="container">
+        <div id="background">
+            <img src="~/src/Background2.png" class="stretch" alt="" />
+        </div>
+        
+        
+        @{
+            string s = HttpContext.Session.GetString("user");
+
+            User user = JsonConvert.DeserializeObject<User>(s);
+
+
+            
+
+            foreach (var card in user.Cards)
+            {
+                string paths = WeebResourceManager.GetInstance().GetCardImageByCardId(card.Id);
+
+                <img class="img" src="@Url.Content(paths)" />
+            }
+        }
+
+        <!--Middle game button set-->
+        <div style="width: 100%; height: 100%">
+            <form asp-page-handler="Back" method="post">
+                <button id="backBtn" class="Button">Retour</button>
+            </form>
+        </div>
+    </div>
+
