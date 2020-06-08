@@ -1,4 +1,10 @@
 ﻿@page
+@using System.IO
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using ProjectWeeb.GameCard.Business.BusinessData
+@using ProjectWeeb.GameCard.Helper
+@using ProjectWeeb.GameCard.Manager
 @model ProjectWeeb.CardsCollectionModel
 @{
     ViewData["Title"] = "CardsCollection";
@@ -9,17 +15,27 @@
     </div>
 
     <div id="Corner">
-        <!--Put img as background in css, get Username and Level/rank from DB-->
+        <!--Put img as background in css, get Username and Level/rnk from DB-->
         level
     </div>
 
-     <table>
-         <tbody> <!--Corps du Tableau de cartes max 2 lignes par page-->
-             <tr><!--Ligne du Tableau de cartes: max 4 cartes-->
-                
-             </tr>
-         </tbody>
-     </table>
+    @{
+        string s = HttpContext.Session.GetString("user");
+
+        User user = JsonConvert.DeserializeObject<User>(s);
+        
+        foreach (var card in user.Cards)
+        {
+
+            string path = WeebResourceManager.GetInstance().GetCardImageByCardId(card.CardId);
+            <img src=@path>
+        }
+
+        string s2 = HttpContext.Session.GetString("user");
+
+        User user2 = JsonConvert.DeserializeObject<User>(s2);
+    }
+
 
 </div>
 

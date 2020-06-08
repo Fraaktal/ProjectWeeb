@@ -30,43 +30,38 @@ namespace ProjectWeeb.GameCard.Manager
         public string GetCardImageByCardId(int id)
         {
             string path = Path.Combine(WeebPathHelper.CardsImagePath, $"{id}.png");
-
-            if (!File.Exists(path))
-            {
-                BuildImagesFromAssemblyById(id);
-            }
-
+            
             return path;
         }
 
-        private void BuildImagesFromAssemblyById(int id)
-        {
-            var resource = Assembly.GetExecutingAssembly().GetManifestResourceNames()
-                .FirstOrDefault(r => r.Contains($"ProjectResources.Cards.{id}"));
-            if (resource != null)
-            {
-                var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+        //private void BuildImagesFromAssemblyById(int id)
+        //{
+        //    var resource = Assembly.GetExecutingAssembly().GetManifestResourceNames()
+        //        .FirstOrDefault(r => r.Contains($"ProjectResources.Cards.{id}"));
+        //    if (resource != null)
+        //    {
+        //        var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
 
-                if (stream != null)
-                {
-                    string filePath = Path.Combine(WeebPathHelper.CardsImagePath, $"{id}.png");
+        //        if (stream != null)
+        //        {
+        //            string filePath = Path.Combine(WeebPathHelper.CardsImagePath, $"{id}.png");
 
-                    try
-                    {
-                        using (var fileStream = File.Create(filePath))
-                        {
-                            stream.Seek(0, SeekOrigin.Begin);
-                            stream.CopyTo(fileStream);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
+        //            try
+        //            {
+        //                using (var fileStream = File.Create(filePath))
+        //                {
+        //                    stream.Seek(0, SeekOrigin.Begin);
+        //                    stream.CopyTo(fileStream);
+        //                }
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                Console.WriteLine(e);
+        //            }
                     
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
 
         public Dictionary<int, HashSet<Effect>> GetEffectsByIdCardsFromFile()
         {
@@ -130,5 +125,13 @@ namespace ProjectWeeb.GameCard.Manager
 
             return new KeyValuePair<int, Effect>(-1,null);
         }
+
+        //public string GetB64Image(int cardId)
+        //{
+        //    string path = GetCardImageByCardId(cardId);
+        //    byte[] imageArray = System.IO.File.ReadAllBytes(path);
+        //    string b64s = Convert.ToBase64String(imageArray);
+        //    return b64s;
+        //}
     }
 }

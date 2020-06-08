@@ -22,22 +22,10 @@
             <!--Put img as background in css, get Username and Level/rank from DB-->
             level
         </div>
-        <canvas id="Canvas" width="600" height="400" style="width:100%; height:100%; border: 1px solid black" >
+        <canvas id="Canvas" style="border: 1px solid black" >
         </canvas>
     </div>
     
     <script src="~/js/signalr/dist/browser/signalr.js"></script>
     <script src="~/js/weeb.js"></script>
 }
-
-<script lang="javascript">
-    var canvas = document.querySelector('#Canvas');
-    var context = canvas.getContext('2d');
-
-    var contour = new Image();
-    contour.src ='plateau.png';
-    contour.addEventListener('load', function () {
-        context.drawImage(contour, canvas.width,canvas.height)
-    })
-
-</script>

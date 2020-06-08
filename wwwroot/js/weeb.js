@@ -21,3 +21,26 @@ connection.start().then(function () {
     return console.error(err.toString());
 });
 
+//TODO jouer avec les ids des cartes pour la pile et la main? ou alors juste affichage avec l'objet Game
+
+var canvas = document.querySelector('#Canvas');
+var context = canvas.getContext('2d');
+
+var contour = new Image();
+contour.src = 'src/plateau.png';
+contour.addEventListener('load',function() {
+        context.drawImage(contour, 0, 0, context.canvas.width, context.canvas.height);
+});
+
+function getMousePosition(canvas, event) {
+    let rect = canvas.getBoundingClientRect();
+    let x = event.clientX - rect.left;
+    let y = event.clientY - rect.top;
+    console.log("Coordinate x: " + x,
+        "Coordinate y: " + y);
+}
+
+
+canvas.addEventListener("mousedown", function (e) {
+    getMousePosition(canvas, e);
+}); 

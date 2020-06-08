@@ -16,7 +16,6 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
             Id = id;
             Cards = cards;
             Decks = decks;
-            Cards.AddRange(cards);
         }
         public int Id { get; set; }
 

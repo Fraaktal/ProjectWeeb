@@ -13,7 +13,6 @@ namespace ProjectWeeb.Pages
     {
         public void OnGet()
         {
-            
         }
 
         public int UserId { get; set; }

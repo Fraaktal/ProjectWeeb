@@ -77,7 +77,7 @@ namespace ProjectWeeb.GameCard.Manager
         {
             List<Card> cards = new List<Card>();
 
-            for (int i = 0; i < 19; i++)
+            for (int i = 0; i < 20; i++)
             {
                 cards.Add(GenerateRandomCard());
             }

@@ -13,30 +13,16 @@
             level
         </div>
         
-        <!--Middle game button set-->
-        <div style="width: 100%; height: 100%">
-            
+        <div id="profileMenu">
             <form asp-page-handler="GamePlateau" method="post">
-                <button id="PopUP" class="Button">Game</button>
+                <button id="PopUP" class="profileButton">Game</button>
             </form>
 
-            <a asp-area="" asp-page="/CardsCollection" class="Button">Cards</a>
+            <a asp-area="" asp-page="/CardsCollection" class="profileButton">Cards</a>
 
-            <a asp-area="" asp-page="/DecksCollection" class="Button">Decks</a>
+            <a asp-area="" asp-page="/DecksCollection" class="profileButton">Decks</a>
         </div>
-
-        <!--Bottom right option corner-->
-        <!--<div>
-            <div class="bouton-aligne">
-                <button></button> !--Bouton d'options--
-            </div>
-            <div class="bouton-aligne">
-                <button></button> !--Bouton de son--
-            </div>
-            <div class="bouton-aligne">
-                <button></button> !--Bouton de contact--
-            </div>
-        </div>-->
+        
     </div>
 }
 

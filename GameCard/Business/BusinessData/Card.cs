@@ -23,9 +23,6 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
             ImagePath = path;
             CurrentStatus = Status.InDeck;
         }
-
-        public int Id { get; set; }
-
         public int CardId { get; set; }
 
         public HashSet<Effect> Effects { get; set; }

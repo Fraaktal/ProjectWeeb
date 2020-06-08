@@ -23,12 +23,7 @@ namespace ProjectWeeb.GameCard.Helper
         {
             get
             {
-                string path = Path.Combine(Path.GetTempPath(), "ProjectWeeb", "Images", "Cards");
-
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+                string path = Path.Combine("src", "Cards");
 
                 return path;
             }

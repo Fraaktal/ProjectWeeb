@@ -56,7 +56,7 @@ namespace ProjectWeeb.GameCard.Control.Converter
 
             foreach (var card in deckCards)
             {
-                result.Add(card.Id);
+                result.Add(card.CardId);
             }
 
             return result;
