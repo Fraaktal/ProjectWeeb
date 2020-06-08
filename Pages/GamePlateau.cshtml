@@ -13,7 +13,7 @@
 
         S'il un joueur est manquant, c'est le joueur restant qui est déclaré gagnant.    
      */
-    <div class="container">
+    <div class="container2">
         <div id="background">
             <img src="~/src/Background2.png" class="stretch" alt="" />
         </div>
@@ -34,13 +34,10 @@
     var canvas = document.querySelector('#Canvas');
     var context = canvas.getContext('2d');
 
-    context.fillStyle = "gold";         //placeholder
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    /*var contour = new Image();
-    contour.src =/*'nomImage.png*/;
-    /*
+    var contour = new Image();
+    contour.src ='plateau.png';
     contour.addEventListener('load', function () {
-        context.drawImage(contour,/*position centre)
-    })*/
+        context.drawImage(contour, canvas.width,canvas.height)
+    })
 
 </script>
