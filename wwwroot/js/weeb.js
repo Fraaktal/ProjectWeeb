@@ -26,6 +26,10 @@ connection.start().then(function () {
 var canvas = document.querySelector('#Canvas');
 var context = canvas.getContext('2d');
 
+
+context.canvas.height = window.innerHeight * 0.997;
+context.canvas.width = window.innerWidth * 0.999;
+
 var contour = new Image();
 contour.src = 'src/plateau.png';
 contour.addEventListener('load',function() {

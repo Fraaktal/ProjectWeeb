@@ -92,8 +92,12 @@ img {
 #Corner {
 	position: absolute; /*important*/
 	background-image: url('../src/corner.png');
-	top: 10px;
-	left: 10px;
+	background-repeat:no-repeat;
+	background-size:contain;
+	width: 15%;
+	height:15%;
+	top: 0px;
+	left: 0px;
 }
 
 
@@ -149,4 +153,11 @@ input[type=text]:focus, input[type=password]:focus{
 .stretch {
 	width: 100%;
 	height: 100%;
+}
+
+#Canvas {
+	position: absolute;
+	left:0px;
+	top:0px;
+	border: 1px solid black;
 }
