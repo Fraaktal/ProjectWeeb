@@ -16,8 +16,7 @@ namespace ProjectWeeb.Pages
     {
         public void OnGet()
         {
-            CWebSite.GetInstance().Value += 1;
-            int test = CWebSite.GetInstance().Value;
+
         }
 
         public void OnPost()

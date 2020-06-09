@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ProjectWeeb.GameCard.Business.BusinessData;
 using ProjectWeeb.GameCard.Business.ModelLiteDbClass;
+using ProjectWeeb.GameCard.Control.DAO;
 using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.GameCard.Control.Converter
@@ -19,8 +20,8 @@ namespace ProjectWeeb.GameCard.Control.Converter
             resultUser.Decks = GetDecksByIds(modelUser.DecksIds);
             resultUser.Cards = GetCardsByIds(modelUser.CardsIds);
             resultUser.Level = modelUser.Level;
-            resultUser.Id = modelUser.Id;
-            resultUser.SelectedDeck = DeckManager.GetInstance().GetDeckById(modelUser.SelectedDeckId);
+            resultUser.Id = modelUser.Id; 
+            resultUser.SelectedDeck = CDeckDAO.GetInstance().GetDeck(modelUser.SelectedDeckId);
 
             return resultUser;
         }
@@ -30,7 +31,22 @@ namespace ProjectWeeb.GameCard.Control.Converter
             ModelUserLiteDb resultUser = new ModelUserLiteDb();
 
             resultUser.UserName = user.UserName;
-            resultUser.Password = user.Password; // ?
+            resultUser.Password = user.Password;
+            resultUser.DecksIds = GetDecksIds(user.Decks);
+            resultUser.CardsIds = GetCardsIds(user.Cards);
+            resultUser.Level = user.Level;
+            resultUser.SelectedDeckId = user.SelectedDeck?.Id ?? -1;
+
+            return resultUser;
+        }
+        
+        public ModelUserLiteDb ConvertToModelUpdate(User user)
+        {
+            ModelUserLiteDb resultUser = new ModelUserLiteDb();
+
+            resultUser.Id = user.Id;
+            resultUser.UserName = user.UserName;
+            resultUser.Password = user.Password;
             resultUser.DecksIds = GetDecksIds(user.Decks);
             resultUser.CardsIds = GetCardsIds(user.Cards);
             resultUser.Level = user.Level;
@@ -44,7 +60,7 @@ namespace ProjectWeeb.GameCard.Control.Converter
             HashSet<Deck> result = new HashSet<Deck>();
             foreach (var id in modelUserDecksIds)
             {
-                Deck deck = DeckManager.GetInstance().GetDeckById(id);
+                Deck deck = CDeckDAO.GetInstance().GetDeck(id);
                 if (deck != null)
                 {
                     result.Add(deck);

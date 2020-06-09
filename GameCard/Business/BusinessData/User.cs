@@ -6,17 +6,19 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
     {
         public User()
         {
-            Level = 1;
+
         }
 
-        public User(string login, string password, int id,List<Card> cards, HashSet<Deck> decks) : this()
+        public User(string login, string password, int id,List<Card> cards) : this()
         {
             UserName = login;
             Password = password;
             Id = id;
+            Level = 1;
             Cards = cards;
-            Decks = decks;
+            Decks = new HashSet<Deck>();
         }
+
         public int Id { get; set; }
 
         public string UserName { get; set; }

@@ -7,17 +7,6 @@ namespace ProjectWeeb.GameCard.Business
 {
     public class Game
     {
-        public Game(Player p1, Player p2, string gameId)
-        {
-            Player1 = p1;
-            Player2 = p2;
-            GameId = gameId;
-            Date = DateTime.Now;
-
-            BattleField = new BattleField();
-            ListenControllerEvent();
-        }
-        
         public Game(Player p1, string gameId)
         {
             Player1 = p1;
@@ -27,9 +16,7 @@ namespace ProjectWeeb.GameCard.Business
             BattleField = new BattleField();
             ListenControllerEvent();
         }
-
         
-
         public Player Player1 { get; set; }
 
         public Player Player2 { get; set; }
@@ -39,7 +26,7 @@ namespace ProjectWeeb.GameCard.Business
         public DateTime Date { get; set; }
         
         public BattleField BattleField { get; set; }
-
+        
         public void EndGame()
         {
             UnListenControllerEvent();

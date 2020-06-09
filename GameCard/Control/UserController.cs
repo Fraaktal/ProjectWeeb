@@ -26,13 +26,26 @@ namespace ProjectWeeb.GameCard.Control
         {
             var cards = CardManager.GetInstance().GenerateWelcomingCard();
 
-            User user = new User(login, password, -1, cards, new HashSet<Deck>());
+            User user = new User(login, password, -1, cards);
 
             if (!CUserDAO.GetInstance().DoesUserExist(login))
             {
                 CUserDAO.GetInstance().RegisterUser(user);
 
-                return true;
+                user = CUserDAO.GetInstance().GetUserByLoginAndPassword(login, password);
+
+                Deck deck = new Deck(user.Cards, "DefaultDeck", user.Id);
+
+                CDeckDAO.GetInstance().SaveDeck(deck);
+
+                deck = CDeckDAO.GetInstance().GetDeckByUserIdAndName(user.Id, "DefaultDeck");
+
+                user.Decks.Add(deck);
+                user.SelectedDeck = deck;
+
+                bool result = CUserDAO.GetInstance().UpdateUser(user);
+
+                return result;
             }
 
             return false;

@@ -19,17 +19,18 @@ namespace ProjectWeeb.Pages
         
         public async Task<IActionResult> OnPostGamePlateau()
         {
-            //Ajouter une alert pour dire recherche de partie en cours
+            //todo Ajouter une alert pour dire recherche de partie en cours
 
             string s = HttpContext.Session.GetString("user");
             User user = JsonConvert.DeserializeObject<User>(s);
             string idGame = null;
+
             while (idGame == null)
             {
                 idGame = CWebSite.GetInstance().GameManager.ConnectPlayerToGame(user);
                 if (idGame == null)
                 {
-                    Thread.Sleep(10000);
+                    Thread.Sleep(10000); //todo mieux gérer file d'attente?
                 }
             }
 

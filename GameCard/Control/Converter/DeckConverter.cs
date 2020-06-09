@@ -13,11 +13,13 @@ namespace ProjectWeeb.GameCard.Control.Converter
     {
         public Deck ConvertBusiness(ModelDeckLiteDb modelDeck)
         {
-            Deck resultDeck = new Deck();
-
-            resultDeck.Id = modelDeck.Id;
-            resultDeck.Name = modelDeck.Name;
-            resultDeck.Cards = GetCardsByIds(modelDeck.CardsIds); 
+            Deck resultDeck = new Deck
+            {
+                Id = modelDeck.Id, 
+                IdUser = modelDeck.IdUser, 
+                Name = modelDeck.Name, 
+                Cards = GetCardsByIds(modelDeck.CardsIds)
+            };
 
             return resultDeck;
         }
@@ -26,11 +28,26 @@ namespace ProjectWeeb.GameCard.Control.Converter
 
         public ModelDeckLiteDb ConvertToModel(Deck deck)
         {
-            ModelDeckLiteDb resultDeck = new ModelDeckLiteDb();
+            ModelDeckLiteDb resultDeck = new ModelDeckLiteDb
+            {
+                Name = deck.Name, 
+                IdUser = deck.IdUser, 
+                CardsIds = GetCardsIds(deck.Cards)
+            };
 
-            resultDeck.Id = deck.Id;
-            resultDeck.Name = deck.Name;
-            resultDeck.CardsIds = GetCardsIds(deck.Cards);
+
+            return resultDeck;
+        }
+        
+        public ModelDeckLiteDb ConvertToModelUpdate(Deck deck)
+        {
+            ModelDeckLiteDb resultDeck = new ModelDeckLiteDb
+            {
+                Name = deck.Name, 
+                IdUser = deck.IdUser, 
+                Id = deck.Id, 
+                CardsIds = GetCardsIds(deck.Cards)
+            };
 
             return resultDeck;
         }

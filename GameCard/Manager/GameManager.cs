@@ -17,16 +17,11 @@ namespace ProjectWeeb.GameCard.Manager
         public GameManager()
         {
             Games = new List<Game>();
-
-            GameController = new GameController(this);
         }
 
         //ECOUTE DEVENT POUR CONNECTER LES PLAYER? LISTENCONTROLLER EVENT UNLISTENCONTROLLEREVENT
-
-
+        
         public List<Game> Games { get; set; }
-
-        public GameController GameController { get; set; }
 
         private void ListenControllerEvent()
         {
@@ -40,7 +35,6 @@ namespace ProjectWeeb.GameCard.Manager
 
         public string ConnectPlayerToGame(User user)
         {
-
             Player player = new Player(user.UserName, user.Level, user.Id, user.SelectedDeck);
 
             string id = TryJoinGame(player);
@@ -68,26 +62,45 @@ namespace ProjectWeeb.GameCard.Manager
             return null;
         }
 
-        private string GenerateGameId()
-        {
-            Random random = new Random();
-            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
         public string GetEnnemyConnectionId(string gameId, int idUser)
         {
-            Game game = Games.FirstOrDefault(g => g.GameId == gameId);
+            return GetEnnemyPlayer(gameId, idUser)?.ConnectionId;
+        }
+
+        public Player GetPlayer(string idGame, in int idUser)
+        {
+            Game game = Games.FirstOrDefault(g => g.GameId == idGame);
 
             if (game != null)
             {
-                if (game.Player1?.IdUser == idUser && game.Player2 != null)
+                if(game.Player1.IdUser == idUser)
                 {
-                    return game.Player2.ConnectionId;
+                    return game.Player1;
                 }
-                else if (game.Player2?.IdUser == idUser && game.Player1 != null)
+                
+                if (game.Player2.IdUser == idUser)
                 {
-                    return game.Player1.ConnectionId;
+                    return game.Player2;
+                }
+            }
+
+            return null;
+        }
+        
+        public Player GetEnnemyPlayer(string idGame, in int idUser)
+        {
+            Game game = Games.FirstOrDefault(g => g.GameId == idGame);
+
+            if (game != null)
+            {
+                if(game.Player1.IdUser == idUser)
+                {
+                    return game.Player2;
+                }
+                
+                if (game.Player2.IdUser == idUser)
+                {
+                    return game.Player1;
                 }
             }
 
@@ -109,6 +122,13 @@ namespace ProjectWeeb.GameCard.Manager
                     game.Player2.ConnectionId = contextConnectionId;
                 }
             }
+        }
+
+        private string GenerateGameId()
+        {
+            Random random = new Random();
+            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

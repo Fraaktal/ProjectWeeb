@@ -36,35 +36,52 @@ namespace ProjectWeeb.GameCard.Control.DAO
                 ModelUserLiteDb modelUserLiteDb = userConverter.ConvertToModel(user);
 
                 var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
-
-                //AUTOMATE ID
-
+                
                 col.EnsureIndex(x => x.Id, true);
 
                 col.Insert(modelUserLiteDb);
             }
         }
 
-        public User GetUserByLoginAndPassword(string login, string password)
+        public bool UpdateUser(User user)
         {
+            bool result = false;
+
             using (var database = new LiteDatabase(WeebPathHelper.DatabasePath))
             {
                 UserConverter userConverter = new UserConverter();
 
+                ModelUserLiteDb modelUserLiteDb = userConverter.ConvertToModelUpdate(user);
+
                 var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
 
-                var modelUser = col.FindOne(c =>
-                    c.UserName.Contains(login) && c.Password.Contains(password));
-
-                User user = null;
-
-                if (modelUser != null)
+                if (col.FindOne(u => u.Id == user.Id) != null)
                 {
-                    user = userConverter.ConvertToBusiness(modelUser);
+                    result = col.Update(modelUserLiteDb);
                 }
-
-                return user;
             }
+
+            return result;
+        }
+
+        public User GetUserByLoginAndPassword(string login, string password)
+        {
+            ModelUserLiteDb modelUser = null;
+            using (var database = new LiteDatabase(WeebPathHelper.DatabasePath))
+            {
+                var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
+
+                modelUser = col.FindOne(c => c.UserName.Contains(login) && c.Password.Contains(password));
+            }
+
+            if (modelUser != null)
+            {
+                UserConverter userConverter = new UserConverter();
+
+                return userConverter.ConvertToBusiness(modelUser);
+            }
+
+            return null;
         }
 
         public void DeleteAccount(int id)
@@ -94,5 +111,7 @@ namespace ProjectWeeb.GameCard.Control.DAO
                 return false;
             }
         }
+
+        
     }
 }

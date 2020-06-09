@@ -8,6 +8,8 @@ namespace ProjectWeeb.GameCard.Business.ModelLiteDbClass
 
         public string Name { get; set; }
 
+        public int IdUser { get; set; }
+
         public List<int> CardsIds { get; set; }
     }
 }

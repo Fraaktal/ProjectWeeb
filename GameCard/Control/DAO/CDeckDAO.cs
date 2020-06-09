@@ -33,13 +33,23 @@ namespace ProjectWeeb.GameCard.Control.DAO
             {
                 DeckConverter deckConverter = new DeckConverter();
 
-                ModelDeckLiteDb modelDeckLiteDb = deckConverter.ConvertToModel(deck);
 
                 var col = database.GetCollection<ModelDeckLiteDb>(DECK_TABLE);
 
-                col.EnsureIndex(x => x.Id);
+                if (col.FindOne(d => d.Id == deck.Id) == null)
+                {
+                    ModelDeckLiteDb modelDeckLiteDb = deckConverter.ConvertToModel(deck);
 
-                col.Insert(modelDeckLiteDb);
+                    col.EnsureIndex(x => x.Id);
+
+                    col.Insert(modelDeckLiteDb);
+                }
+                else
+                {
+                    ModelDeckLiteDb modelDeckLiteDb = deckConverter.ConvertToModelUpdate(deck);
+
+                    col.Update(modelDeckLiteDb);
+                }
             }
         }
 
@@ -53,9 +63,12 @@ namespace ProjectWeeb.GameCard.Control.DAO
 
                 var modelDeck = col.FindOne(c => c.Id == id);
 
-                Deck deck = deckConverter.ConvertBusiness(modelDeck);
+                if (modelDeck != null)
+                {
+                    return deckConverter.ConvertBusiness(modelDeck);
+                }
 
-                return deck;
+                return null;
             }
         }
 
@@ -67,6 +80,25 @@ namespace ProjectWeeb.GameCard.Control.DAO
 
                 var value = new BsonValue(id);
                 col.Delete(value);
+            }
+        }
+
+        public Deck GetDeckByUserIdAndName(int userId, string defaultdeck)
+        {
+            using (var database = new LiteDatabase(WeebPathHelper.DatabasePath))
+            {
+                DeckConverter deckConverter = new DeckConverter();
+
+                var col = database.GetCollection<ModelDeckLiteDb>(DECK_TABLE);
+
+                var modelDeck = col.FindOne(c => c.IdUser == userId && c.Name.Contains(defaultdeck));
+
+                if (modelDeck != null)
+                {
+                    return deckConverter.ConvertBusiness(modelDeck);
+                }
+
+                return null;
             }
         }
     }
