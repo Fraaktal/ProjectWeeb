@@ -1,37 +1,43 @@
 ﻿@page
+@using System.IO
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using ProjectWeeb.GameCard.Business.BusinessData
+@using ProjectWeeb.GameCard.Helper
+@using ProjectWeeb.GameCard.Manager
 @model ProjectWeeb.DeckCollectionModel
 @{
     ViewData["Title"] = "DeckCollection";
 }
 
-    <div class="container2">
-        <div id="background">
-            <img src="~/src/Background3.png" class="stretch" alt="" />
-        </div>
-
-        <div id="Corner">
-            <!--Put img as background in css, get Username and Level/rnk from DB-->
-            level
-        </div>
-
-        <div id="ImgCollect">
-            @{
-                string s = HttpContext.Session.GetString("user");
-
-                User user = JsonConvert.DeserializeObject<User>(s);
-
-                foreach (var card in user.Cards)
-                {
-
-                    string path = WeebResourceManager.GetInstance().GetCardImageByCardId(card.CardId);
-                    <img src=@path class="image">
-                }
-
-                string s2 = HttpContext.Session.GetString("user");
-
-                User user2 = JsonConvert.DeserializeObject<User>(s2);
-            }
-        </div>
-
+<div class="container2">
+    <div id="background">
+        <img src="~/src/Background3.png" class="stretch" alt="" />
     </div>
+
+    <div id="Corner">
+        <!--Put img as background in css, get Username and Level/rnk from DB-->
+        level
+    </div>
+
+    <div id="ImgCollect">
+        @{
+            string s = HttpContext.Session.GetString("user");
+
+            User user = JsonConvert.DeserializeObject<User>(s);
+
+            foreach (var card in user.Cards)
+            {
+
+                string path = WeebResourceManager.GetInstance().GetCardImageByCardId(card.CardId);
+                <img src=@path class="image">
+            }
+
+            string s2 = HttpContext.Session.GetString("user");
+
+            User user2 = JsonConvert.DeserializeObject<User>(s2);
+        }
+    </div>
+
+</div>
 
