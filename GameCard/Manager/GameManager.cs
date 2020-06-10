@@ -52,7 +52,11 @@ namespace ProjectWeeb.GameCard.Manager
         {
             foreach (var game in Games)
             {
-                if (game.Player2 == null)
+                if (game.Player1?.IdUser == player.IdUser || game.Player2?.IdUser == player.IdUser)
+                {
+                    return game.GameId;
+                }
+                if (game.Player2 == null && game.Player1?.IdUser != player.IdUser)
                 {
                     game.JoinPlayer(player);
                     return game.GameId;
@@ -129,6 +133,11 @@ namespace ProjectWeeb.GameCard.Manager
             Random random = new Random();
             const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public Game GetGame(string idGame)
+        {
+            return Games.FirstOrDefault(g => g.GameId == idGame);
         }
     }
 }
