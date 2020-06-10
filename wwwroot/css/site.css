@@ -113,13 +113,22 @@ img {
 }
 
 .container2 {
-	display: flex;
+	/*display: flex;
 	flex-direction: row;
+	flex-wrap:wrap;
+	justify-content:space-evenly;*/
 	align-items:start;
 	margin: auto;
 	margin-top: 10%;
 	width: 100%;
 	height: 100%;
+}
+
+#ImgCollect {
+	display:flex;
+	flex-direction:row;
+	flex-wrap:wrap;
+	justify-content:space-evenly;
 }
 
 

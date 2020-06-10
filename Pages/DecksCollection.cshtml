@@ -10,19 +10,28 @@
         </div>
 
         <div id="Corner">
-            <!--Put img as background in css, get Username and Level/rank from DB-->
+            <!--Put img as background in css, get Username and Level/rnk from DB-->
             level
         </div>
 
-        <table>
-            <tbody>
-                <!--Corps du Tableau de cartes max 2 lignes par page-->
-                <tr>
-                    <!--Ligne du Tableau de cartes: max 4 cartes-->
+        <div id="ImgCollect">
+            @{
+                string s = HttpContext.Session.GetString("user");
 
-                </tr>
-            </tbody>
-        </table>
+                User user = JsonConvert.DeserializeObject<User>(s);
+
+                foreach (var card in user.Cards)
+                {
+
+                    string path = WeebResourceManager.GetInstance().GetCardImageByCardId(card.CardId);
+                    <img src=@path class="image">
+                }
+
+                string s2 = HttpContext.Session.GetString("user");
+
+                User user2 = JsonConvert.DeserializeObject<User>(s2);
+            }
+        </div>
 
     </div>
 
