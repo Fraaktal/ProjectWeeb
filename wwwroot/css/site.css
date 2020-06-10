@@ -64,9 +64,10 @@
 	margin: 10px;
 }
 
-.image:hover {
-		filter: brightness(150%);
-}
+	.image:hover {
+		filter: brightness(130%);
+		border: 6px groove #F5BE27;
+	}
 
 #inscriptionForm {
 	padding: 150px;
