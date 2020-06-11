@@ -65,9 +65,19 @@
 }
 
 	.image:hover {
-		filter: brightness(130%);
+		filter: brightness(125%);
 		border: 6px groove #F5BE27;
 	}
+
+#Encyclo {
+	background-image: url('../src/connect.png');
+	background-size: contain;
+	background-repeat: no-repeat;
+	color: snow;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
 
 #inscriptionForm {
 	padding: 150px;
