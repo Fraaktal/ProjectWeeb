@@ -70,7 +70,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void Megumin_Explosioooon(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.EnnemySide.Clear();
+            BattleField.Player2Side.Clear();
             BattleField.GetPlayerCard(arg1).CurrentStatus = Card.Status.Sleeping;
         }
 
@@ -84,7 +84,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void Joker_All_Out_Attack(CardPosition arg1, CardPosition arg2)
         {
-            foreach (var cardPosition in BattleField.CurrentPlayerSide)
+            foreach (var cardPosition in BattleField.Player1Side)
             {
                 BasicAttack(cardPosition, arg2);
             }
@@ -106,7 +106,7 @@ namespace ProjectWeeb.GameCard.Manager
 
             foreach (var card in cards)
             {
-                BattleField.UnsetCardForEnnemy(card.X,card.Y);
+                BattleField.UnsetCardForEnnemy(card.Position);
             }
         }
 
@@ -118,18 +118,18 @@ namespace ProjectWeeb.GameCard.Manager
         private void SaikiKusuo_Retour_arriere(CardPosition arg1, CardPosition arg2)
         {
             Card card = BattleField.PreviousBattlefield.GetPlayerCard(arg2);
-            BattleField.SetCardForCurrentPlayer(card, arg2.X,arg2.Y);
+            BattleField.SetCardForCurrentPlayer(card, arg2.Position);
         }
 
         private void Kira_Death_note(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.UnsetCardForEnnemy(arg2.X, arg2.Y);
+            BattleField.UnsetCardForEnnemy(arg2.Position);
         }
 
         private void Guts_Berserk(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.GetEnnemyCardByPosition(arg2.X-1, arg2.Y).Life -= 1;
-            BattleField.GetEnnemyCardByPosition(arg2.X+1, arg2.Y).Life -= 1;
+            BattleField.GetEnnemyCardByPosition(arg2.Position -1).Life -= 1;
+            BattleField.GetEnnemyCardByPosition(arg2.Position +1).Life -= 1;
             BattleField.GetEnnemyCard(arg2);
         }
 
@@ -140,7 +140,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void Monika_Sayonara(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.UnsetCardForEnnemy(arg2.X, arg2.Y);
+            BattleField.UnsetCardForEnnemy(arg2.Position);
         }
 
         private void Sans_Bone(CardPosition arg1, CardPosition arg2)
@@ -173,7 +173,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void Zelda_Princesse_Hyrule(CardPosition arg1, CardPosition arg2)
         {
-            foreach (var cardPosition in BattleField.CurrentPlayerSide)
+            foreach (var cardPosition in BattleField.Player1Side)
             {
                 cardPosition.Card.Life += 1;
             }

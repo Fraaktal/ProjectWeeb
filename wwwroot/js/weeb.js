@@ -14,7 +14,7 @@ var idUser = urlParams.get('userId');
 
 //Rapport des cartes : 39/56
 var basicWidth = 0;
-var cardInHandHeight = 0;
+var basicHeigth = 0;
 
 var cardPath = 'src/Cards/';
 
@@ -23,6 +23,9 @@ var drawPile = [];
 var isPlayerCurrentTurn = false;
 var cardLoaded = 0;
 var currentHand = [];
+var currentMode = "basic";
+var selectedCardId = -1;
+var selectedCardPlace = -1;
 
 function displayCanvas() {
 
@@ -34,8 +37,8 @@ function displayCanvas() {
 
     context.drawImage(cardImages[24], 0, 0, context.canvas.width, context.canvas.height);
 
-    basicWidth = getCardInHandWidh();
-    cardInHandHeight = basicWidth * 56 / 39;
+    basicWidth = getCardInHandWidth();
+    basicHeigth = basicWidth * 56 / 39;
     placeImages();
     placeHandCards(currentHand);
     drawImages();
@@ -57,6 +60,7 @@ canvas.addEventListener("mousedown", function (e) {
 var graphicElement = {
     type: "", //card //cardposition //enemycard //btnNext //ennemy
     info: "",
+    info2: "",
     image: null,
     posX: 0,
     posY: 0,
@@ -88,6 +92,18 @@ connection.on("TurnChanged", function (isPlayerTurn, handCards) {
     }
 });
 
+
+connection.on("PlayerCardPlayed", function (handCards, pSide) {
+    placeHandCards(handCards);
+    placeCardsOnBattleField(pSide, false);
+    drawImages();
+});
+
+connection.on("EnemyCardPlayedClient", function (pSide) {
+    placeCardsOnBattleField(pSide, true);
+    drawImages();
+});
+
 connection.start().then(function () {
     console.log("Connexion établie");
 }).catch(function (err) {
@@ -114,8 +130,26 @@ function getGameElementOfClick(x, y) {
     return res;
 }
 
-function handleClick(state, x, y) {
-    
+function handleClick(ge) {
+    if (ge == null) {
+        currentMode = "basic";
+        selectedCardId = -1;
+        return;
+    }
+    if (ge.type === "HandCard") {
+        currentMode = "CanPlayCard";
+        selectedCardId = ge.info;
+        selectedCardPlace = ge.info2;
+    }
+    else if (ge.type === "PlayerCardPosition" && currentMode === "CanPlayCard") {
+        connection.invoke("PlayCard", idGame, idUser, selectedCardId, ge.info, selectedCardPlace).catch(function(err) {
+            return console.error(err.toString());
+        });
+    }
+    else {
+        currentMode = "basic";
+        selectedCardId = -1;
+    }
 }
 
 function loadCardImages() {
@@ -128,7 +162,7 @@ function loadCardImages() {
 
         card.addEventListener('load', function () {
             cardLoaded += 1;
-            if (cardLoaded === 25) {
+            if (cardLoaded === 26) {
                 displayCanvas();
                 connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                     return console.error(err.toString());
@@ -138,10 +172,10 @@ function loadCardImages() {
     }
 
     var back = new Image();
-    back.src = 'src/Cards/back.png';
+    back.src = 'src/Cards/Back.png';
     back.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 25) {
+        if (cardLoaded === 26) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -156,7 +190,7 @@ function loadCardImages() {
     playerLife.src = 'src/Corner2.png';
     playerLife.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 25) {
+        if (cardLoaded === 26) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -171,7 +205,7 @@ function loadCardImages() {
     enemylife.src = 'src/CornerEnemy.png';
     enemylife.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 25) {
+        if (cardLoaded === 26) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -186,7 +220,7 @@ function loadCardImages() {
     cible.src = 'src/Cible.png';
     cible.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 25) {
+        if (cardLoaded === 26) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -197,11 +231,11 @@ function loadCardImages() {
 
     result.push(cible);
 
-    var contour = new Image();
-    contour.src = 'src/plateau.png';
-    contour.addEventListener('load', function () {
+    var plateau = new Image();
+    plateau.src = 'src/plateau.png';
+    plateau.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 25) {
+        if (cardLoaded === 26) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -210,12 +244,27 @@ function loadCardImages() {
         }
     });
 
-    result.push(contour);
+    result.push(plateau);
+
+    var fond = new Image();
+    fond.src = 'src/Cards/Fond.png';
+    fond.addEventListener('load', function () {
+        cardLoaded += 1;
+        if (cardLoaded === 26) {
+            displayCanvas();
+            connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+        }
+    });
+
+    result.push(fond);
 
     return result;
 }
 
-function getGraphicElement(type, info, image, x, y, w, h) {
+function initGraphicElement(type, info, image, x, y, w, h) {
 
     var obj = Object.create(graphicElement);
     obj.type = type;
@@ -229,26 +278,52 @@ function getGraphicElement(type, info, image, x, y, w, h) {
     return obj;
 }
 
-function getCardInHandWidh(state, x, y) {
+function getCardInHandWidth() {
     var res = (totalWidth - 65) / 9;
     res = res - res % 39;
     return res;
 }
 
-//TODO pas ça une fonction qui affiche tout les éléments des games elements et x autres qui créent les GE
-
 function placeHandCards(cardsIds) {
     var currentCardInHandAmount = 0;
 
+    var copy = [];
+
+    gameElements.forEach(function(gel) {
+        if (gel.type != "HandCard") {
+            copy.push(gel);
+        }
+    });
+    gameElements = copy;
+
     cardsIds.forEach(function (id) {
         var xPos = (currentCardInHandAmount+1) * (basicWidth + 5) + 10;
-        var yPos = totalHeight - cardInHandHeight - 10;
+        var yPos = totalHeight - basicHeigth - 10;
         
-        var ge = getGraphicElement("HandCard", id, cardImages[id], xPos, yPos, basicWidth, cardInHandHeight);
-
+        var ge = initGraphicElement("HandCard", id, cardImages[id], xPos, yPos, basicWidth, basicHeigth);
+        ge.info2 = currentCardInHandAmount;
         gameElements.push(ge);
 
         currentCardInHandAmount += 1;
+    });
+}
+
+function placeCardsOnBattleField(battlefield, enemy) {
+    var currentPos = 0;
+
+    battlefield.forEach(function (id) {
+        if (id !== -1) {
+
+            var offset2 = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5) / 2;
+            var xPos = offset2 + currentPos * (5 + basicWidth * 2 / 3);
+            var yPos = totalHeight * 0.8 / 2 + 30;
+
+            var type = enemy ? "EnemyPlayedCard" : "PlayerPlayedCard";
+            var ge = initGraphicElement(type, id, cardImages[id], xPos, yPos, basicWidth * 2 / 3, basicHeigth * 2 / 3);
+            gameElements.push(ge);
+
+        }
+        currentPos += 1;
     });
 }
 
@@ -259,33 +334,53 @@ function placeImages() {
 
     //Emplacement des vies
     var xPos = 0;
-    var yPos = totalHeight - cardInHandHeight;
+    var yPos = totalHeight - basicHeigth;
     var id = 21;
-    var ge = getGraphicElement("PlayerLife", id, cardImages[id], xPos, yPos, basicWidth, cardInHandHeight);
+    var ge = initGraphicElement("PlayerLife", id, cardImages[id], xPos, yPos, basicWidth, basicHeigth);
 
     gameElements.push(ge);
 
     xPos = totalWidth - basicWidth;
     yPos = 0;
     id = 22;
-    ge = getGraphicElement("EnemyLife", id, cardImages[id], xPos, yPos, basicWidth, cardInHandHeight);
+    ge = initGraphicElement("EnemyLife", id, cardImages[id], xPos, yPos, basicWidth, basicHeigth);
 
     gameElements.push(ge);
 
     //Cible
     xPos = totalWidth / 2 - basicWidth / 2;
-    yPos = 5;
+    yPos = 2;
     id = 23;
-    ge = getGraphicElement("target", id, cardImages[id], xPos, yPos, basicWidth, basicWidth*4/7);
+    ge = initGraphicElement("target", id, cardImages[id], xPos, yPos, basicWidth, basicWidth*4/7);
 
     gameElements.push(ge);
+
+    for (var i = 0; i < 8; i++) {
+        var offset = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5)/ 2;
+        xPos = offset + i * (5 + basicWidth * 2 / 3);
+        yPos = totalHeight * 0.8 / 2 - basicHeigth * 2 / 3 - 30;
+
+        id = 25;
+        ge = initGraphicElement("EnemyCardPosition", i, cardImages[id], xPos, yPos, basicWidth * 2 / 3, basicHeigth * 2 / 3);
+        gameElements.push(ge);
+    }
+
+    for (var j = 0; j < 8; j++) {
+        var offset2 = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5)/ 2;
+        xPos = offset2 + j * (5 + basicWidth * 2 / 3);
+        yPos = totalHeight * 0.8 / 2 + 30;
+
+        id = 25;
+        ge = initGraphicElement("PlayerCardPosition", j, cardImages[id], xPos, yPos, basicWidth * 2 / 3, basicHeigth * 2 / 3);
+        gameElements.push(ge);
+    }
 
 }
 
 function drawImages() {
     context.drawImage(cardImages[24], 0, 0, context.canvas.width, context.canvas.height);
     gameElements.forEach(function (ge) {
-        if (ge.type !== "EnemyCard") {
+        if (ge.type !== "EnemyPlayedCard") {
             context.drawImage(ge.image, ge.posX, ge.posY, ge.width, ge.height);
         }
         else {

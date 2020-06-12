@@ -4,16 +4,13 @@ namespace ProjectWeeb.GameCard.Business
 {
     public class CardPosition
     {
-        public CardPosition(int x, int y)
+        public CardPosition(int pos)
         {
-            X = x;
-            Y = y;
+            Position = pos;
         }
 
         public Card Card { get; set; }
 
-        public int X { get; set; }
-
-        public int Y { get; set; }
+        public int Position { get; set; }
     }
 }

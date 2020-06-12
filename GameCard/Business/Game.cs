@@ -6,6 +6,7 @@ using System.Timers;
 using LiteDB.Engine;
 using Microsoft.AspNetCore.SignalR.Client;
 using ProjectWeeb.GameCard.Business.BusinessData;
+using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.GameCard.Business
 {
@@ -81,6 +82,8 @@ namespace ProjectWeeb.GameCard.Business
         private void ListenControllerEvent()
         {
             GameConnection.On<int, string>("PlayerConnected", PlayerConnected);
+
+            GameConnection.On<int, int, int, int>("CardPlayed", CardPlayed);
         }
 
         private async Task PlayerConnected(int idPlayer, string connectionId)
@@ -94,6 +97,29 @@ namespace ProjectWeeb.GameCard.Business
                 await ConnectPlayer(idPlayer, connectionId);
             }
 
+        }
+
+        private async Task CardPlayed(int idUser, int idCard, int position, int positionInHand)
+        {
+            int[] handCards = null;
+            if (idUser == Player1.IdUser)
+            {
+                Card card = CardManager.GetInstance().GetCardById(idCard);
+                BattleField.SetCardForCurrentPlayer(card,position);
+                Player1.CurrentHand.RemoveAt(positionInHand);
+                var pSide = BattleField.ComputePlayer1Side();
+                handCards = GetCardsIds(Player1.CurrentHand);
+                await GameConnection.InvokeAsync("CardSuccesfullyPlayed", Player1.ConnectionId, Player2.ConnectionId, pSide, handCards);
+            }
+            else
+            {
+                Card card = CardManager.GetInstance().GetCardById(idCard);
+                BattleField.SetCardForCurrentPlayer(card, position);
+                Player2.CurrentHand.RemoveAt(positionInHand);
+                var pSide = BattleField.ComputePlayer2Side();
+                handCards = GetCardsIds(Player2.CurrentHand);
+                await GameConnection.InvokeAsync("CardSuccesfullyPlayed", Player2.ConnectionId, Player1.ConnectionId, pSide, handCards);
+            }
         }
 
         private async Task ConnectPlayer(int idPlayer, string connectionId)
@@ -131,7 +157,8 @@ namespace ProjectWeeb.GameCard.Business
             if (AllPlayerConnected)
             {
                 CurrentPlayerIdTurn = Player1.IdUser;
-                await GameConnection.InvokeAsync("SetPlayerTurn", Player1.ConnectionId, Player2.ConnectionId);
+                int[] p1handCards = GetCardsIds(Player1.CurrentHand);
+                await GameConnection.InvokeAsync("SetPlayerTurn", Player1.ConnectionId, Player2.ConnectionId, p1handCards);
             }
         }
         
@@ -140,7 +167,7 @@ namespace ProjectWeeb.GameCard.Business
             //TODO
         }
 
-        private int[] GetCardsIds(HashSet<Card> cards)
+        private int[] GetCardsIds(List<Card> cards)
         {
             int[] result = new int[cards.Count];
             for (int i = 0; i < cards.Count; i++)

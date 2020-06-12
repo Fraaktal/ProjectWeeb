@@ -12,7 +12,7 @@ namespace ProjectWeeb.GameCard.Business
             IdUser = idUser;
             Hp = 20;
             DrawPile = deck.Cards;
-            CurrentHand = new HashSet<Card>();
+            CurrentHand = new List<Card>();
         }
 
         public string Pseudo { get; set; }
@@ -23,7 +23,7 @@ namespace ProjectWeeb.GameCard.Business
 
         public int Hp { get; set; }
         
-        public HashSet<Card> CurrentHand { get; set; }
+        public List<Card> CurrentHand { get; set; }
 
         public List<Card> DrawPile { get; set; }
 

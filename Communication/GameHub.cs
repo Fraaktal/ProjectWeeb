@@ -14,10 +14,8 @@ namespace ProjectWeeb.Communication
         public async Task PlayerConnectedOnGame(string idGame, string idUserS)
         {
             int idUser = int.Parse(idUserS);
-
-            Game game = CWebSite.GetInstance().GameManager.GetGame(idGame);
-
-            await Clients.Clients(game.GameId).SendAsync("PlayerConnected", idUser,Context.ConnectionId);
+            
+            await Clients.Clients(idGame).SendAsync("PlayerConnected", idUser,Context.ConnectionId);
         }
 
         
@@ -26,15 +24,28 @@ namespace ProjectWeeb.Communication
             await Clients.Client(connectionId).SendAsync("InitializeGamePlayerSide", handCards);
         }
         
-        public async Task SetPlayerTurn(string connectionIdP1, string connectionIdP2)
+        public async Task SetPlayerTurn(string connectionIdP1, string connectionIdP2, int[] handCards)
         {
-            Clients.Client(connectionIdP1).SendAsync("TurnChanged", true);
-            await Clients.Client(connectionIdP2).SendAsync("TurnChanged", false);
+            Clients.Client(connectionIdP1).SendAsync("TurnChanged", true, handCards);
+            await Clients.Client(connectionIdP2).SendAsync("TurnChanged", false, null);
         }
         
         public async Task LaunchTimer(string idGame)
         {
 
+        }
+
+        public async Task PlayCard(string idGame, string idUserS, int idCard, int position, int positionInHand)
+        {
+            int idUser = int.Parse(idUserS);
+
+            await Clients.Client(idGame).SendAsync("CardPlayed", idUser, idCard, position, positionInHand);
+        }
+
+        public async Task CardSuccesfullyPlayed(string connectionIdP1, string connectionIdP2, int[] pside, int[] handCards)
+        {
+            await Clients.Client(connectionIdP1).SendAsync("PlayerCardPlayed", handCards, pside);
+            await Clients.Client(connectionIdP2).SendAsync("EnemyCardPlayedClient", pside);
         }
     }
 }
