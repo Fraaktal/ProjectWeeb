@@ -4,6 +4,7 @@ using LiteDB.Engine;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 using ProjectWeeb.GameCard.Business.BusinessData;
@@ -16,7 +17,7 @@ namespace ProjectWeeb.Pages
     {
         public void OnGet()
         {
-
+            
         }
 
         public void OnPost()
@@ -32,6 +33,10 @@ namespace ProjectWeeb.Pages
                 HttpContext.Session.SetString("user",s);
 
                 Response.Redirect("/Profile");
+            }
+            else
+            {
+                Response.WriteAsync("<script>alert('Erreur mot de passe ou login incorrect');</script>");
             }
 
         }

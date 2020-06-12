@@ -30,7 +30,7 @@ namespace ProjectWeeb.Pages
                 idGame = CWebSite.GetInstance().GameManager.ConnectPlayerToGame(user);
                 if (idGame == null)
                 {
-                    Thread.Sleep(10000); //todo mieux gérer file d'attente?
+                    Thread.Sleep(1000); //todo mieux gérer file d'attente?
                 }
             }
 

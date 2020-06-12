@@ -15,16 +15,24 @@ namespace ProjectWeeb.GameCard.Control
 
         public WebSiteManager WebSiteManager { get; set; }
 
-        public User TryLogUser(string login, string password)
+        public User TryLogUser(string login, string pass)
         {
+            byte[] data = System.Text.Encoding.ASCII.GetBytes(pass);
+            data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+            string password = System.Text.Encoding.ASCII.GetString(data);
+
             var result = CUserDAO.GetInstance().GetUserByLoginAndPassword(login, password);
 
             return result;
         }
 
-        public bool TryRegisterUser(string login, string password)
+        public bool TryRegisterUser(string login, string pass)
         {
             var cards = CardManager.GetInstance().GenerateWelcomingCard();
+
+            byte[] data = System.Text.Encoding.ASCII.GetBytes(pass);
+            data = new System.Security.Cryptography.SHA256Managed().ComputeHash(data);
+            string password = System.Text.Encoding.ASCII.GetString(data);
 
             User user = new User(login, password, -1, cards);
 

@@ -10,41 +10,29 @@ namespace ProjectWeeb.Communication
 {
     public class GameHub : Hub
     {
+        //NOT GOOD GERER DANS LE GAME
         public async Task PlayerConnectedOnGame(string idGame, string idUserS)
         {
             int idUser = int.Parse(idUserS);
 
-            CWebSite.GetInstance().GameManager.RegisterConnectionId(idUser, idGame, Context.ConnectionId);
-
-            string idConnectionOtherPlayer = CWebSite.GetInstance().GameManager.GetEnnemyConnectionId(idGame, idUser);
-
-            if (idConnectionOtherPlayer != null)
-            {
-                await Clients.Clients(idConnectionOtherPlayer).SendAsync("OtherPlayerConnected");
-            }
-
-            Player player = CWebSite.GetInstance().GameManager.GetPlayer(idGame, idUser);
-
-            int[] drawpile = new int[player.DrawPile.Count];
-            for (int i = 0; i < player.DrawPile.Count; i++)
-            {
-                drawpile[i] = player.DrawPile.ElementAt(i).CardId;
-            }
-
-            await Clients.Clients(player.ConnectionId).SendAsync("InitializeGamePlayerSide", drawpile);
-
             Game game = CWebSite.GetInstance().GameManager.GetGame(idGame);
 
-            if (game.Player1 != null && game.Player2 != null)
-            {
-                Clients.Clients(game.Player1.ConnectionId).SendAsync("GameReadyToStart", true);
-                await Clients.Clients(game.Player2.ConnectionId).SendAsync("GameReadyToStart", false);
-            }
-
+            await Clients.Clients(game.GameId).SendAsync("PlayerConnected", idUser,Context.ConnectionId);
         }
 
         
-        public async Task LaunchTimer(string idGame, string idUserS)
+        public async Task InitializeGame(string connectionId, int[] handCards)
+        {
+            await Clients.Client(connectionId).SendAsync("InitializeGamePlayerSide", handCards);
+        }
+        
+        public async Task SetPlayerTurn(string connectionIdP1, string connectionIdP2)
+        {
+            Clients.Client(connectionIdP1).SendAsync("TurnChanged", true);
+            await Clients.Client(connectionIdP2).SendAsync("TurnChanged", false);
+        }
+        
+        public async Task LaunchTimer(string idGame)
         {
 
         }

@@ -91,7 +91,7 @@ namespace ProjectWeeb.GameCard.Control.DAO
 
                 var col = database.GetCollection<ModelDeckLiteDb>(DECK_TABLE);
 
-                var modelDeck = col.FindOne(c => c.IdUser == userId && c.Name.Contains(defaultdeck));
+                var modelDeck = col.FindOne(c => c.IdUser == userId && c.Name.Contains(defaultdeck) && c.Name.Length == defaultdeck.Length);
 
                 if (modelDeck != null)
                 {

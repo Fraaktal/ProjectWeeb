@@ -71,7 +71,9 @@ namespace ProjectWeeb.GameCard.Control.DAO
             {
                 var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
 
-                modelUser = col.FindOne(c => c.UserName.Contains(login) && c.Password.Contains(password));
+                modelUser = col.FindOne(c =>
+                    c.UserName.Contains(login) && c.UserName.Length == login.Length && c.Password.Contains(password) &&
+                    c.Password.Length == password.Length);
             }
 
             if (modelUser != null)
@@ -101,7 +103,7 @@ namespace ProjectWeeb.GameCard.Control.DAO
             {
                 var col = database.GetCollection<ModelUserLiteDb>(USER_TABLE);
 
-                var modelUser = col.FindOne(c => (c.UserName.Contains(login)));
+                var modelUser = col.FindOne(c => (c.UserName.Contains(login) && c.UserName.Length == login.Length));
 
                 if (modelUser != null)
                 {

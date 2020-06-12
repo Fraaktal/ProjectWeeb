@@ -11,27 +11,12 @@ namespace ProjectWeeb.GameCard.Manager
 {
     public class GameManager
     {
-
-        public event EventHandler<ConnectionEventArg> PlayerConnectedToGame;
-
         public GameManager()
         {
             Games = new List<Game>();
         }
 
-        //ECOUTE DEVENT POUR CONNECTER LES PLAYER? LISTENCONTROLLER EVENT UNLISTENCONTROLLEREVENT
-        
         public List<Game> Games { get; set; }
-
-        private void ListenControllerEvent()
-        {
-            //GameEnded
-        }
-
-        private void UnListenControllerEvent()
-        {
-
-        }
 
         public string ConnectPlayerToGame(User user)
         {
@@ -40,9 +25,9 @@ namespace ProjectWeeb.GameCard.Manager
             string id = TryJoinGame(player);
             if (id == null && Games.Count < 10)
             {
-                id = GenerateGameId();
-                Game game = new Game(player, id);
+                Game game = new Game(player);
                 Games.Add(game);
+                id = game.GameId;
             }
 
             return id;
@@ -109,30 +94,6 @@ namespace ProjectWeeb.GameCard.Manager
             }
 
             return null;
-        }
-
-        public void RegisterConnectionId(int idUser, string gameId, string contextConnectionId)
-        {
-            Game game = Games.FirstOrDefault(g => g.GameId == gameId);
-
-            if (game != null)
-            {
-                if (game.Player1.IdUser == idUser)
-                {
-                    game.Player1.ConnectionId = contextConnectionId;
-                }
-                else
-                {
-                    game.Player2.ConnectionId = contextConnectionId;
-                }
-            }
-        }
-
-        private string GenerateGameId()
-        {
-            Random random = new Random();
-            const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(chars, 10).Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         public Game GetGame(string idGame)
