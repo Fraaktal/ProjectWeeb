@@ -84,6 +84,10 @@ namespace ProjectWeeb.GameCard.Business
             GameConnection.On<int, string>("PlayerConnected", PlayerConnected);
 
             GameConnection.On<int, int, int, int>("CardPlayed", CardPlayed);
+
+            GameConnection.On("SetTimer", SetTimer);
+
+            GameConnection.On("SetNextTurn", SetNextTurn);
         }
 
         private async Task PlayerConnected(int idPlayer, string connectionId)
@@ -105,7 +109,7 @@ namespace ProjectWeeb.GameCard.Business
             if (idUser == Player1.IdUser)
             {
                 Card card = CardManager.GetInstance().GetCardById(idCard);
-                BattleField.SetCardForCurrentPlayer(card,position);
+                BattleField.SetCardForPlayer1(card,position);
                 Player1.CurrentHand.RemoveAt(positionInHand);
                 var pSide = BattleField.ComputePlayer1Side();
                 handCards = GetCardsIds(Player1.CurrentHand);
@@ -114,7 +118,7 @@ namespace ProjectWeeb.GameCard.Business
             else
             {
                 Card card = CardManager.GetInstance().GetCardById(idCard);
-                BattleField.SetCardForCurrentPlayer(card, position);
+                BattleField.SetCardForPlayer2(card, position);
                 Player2.CurrentHand.RemoveAt(positionInHand);
                 var pSide = BattleField.ComputePlayer2Side();
                 handCards = GetCardsIds(Player2.CurrentHand);
@@ -158,7 +162,8 @@ namespace ProjectWeeb.GameCard.Business
             {
                 CurrentPlayerIdTurn = Player1.IdUser;
                 int[] p1handCards = GetCardsIds(Player1.CurrentHand);
-                await GameConnection.InvokeAsync("SetPlayerTurn", Player1.ConnectionId, Player2.ConnectionId, p1handCards);
+                int[] p2handCards = GetCardsIds(Player2.CurrentHand);
+                await GameConnection.InvokeAsync("SetPlayerTurn", Player1.ConnectionId, Player2.ConnectionId, p1handCards, p2handCards);
             }
         }
         
@@ -200,17 +205,24 @@ namespace ProjectWeeb.GameCard.Business
             Timer.Enabled = true;
         }
 
+        private void SetNextTurn()
+        {
+            EndTurnOfCurrentPlayer(this, null);
+        }
+
         private async void EndTurnOfCurrentPlayer(object sender, ElapsedEventArgs e)
         {
+            int[] p1handCards = GetCardsIds(Player1.CurrentHand);
+            int[] p2handCards = GetCardsIds(Player2.CurrentHand);
             if (Player1.IdUser == CurrentPlayerIdTurn)
             {
                 CurrentPlayerIdTurn = Player2.IdUser;
-                await GameConnection.InvokeAsync("SetPlayerTurn", Player2.ConnectionId, Player1.ConnectionId);
+                await GameConnection.InvokeAsync("SetPlayerTurn", Player2.ConnectionId, Player1.ConnectionId, p2handCards, p1handCards);
             }
             else
             {
                 CurrentPlayerIdTurn = Player1.IdUser;
-                await GameConnection.InvokeAsync("SetPlayerTurn", Player1.ConnectionId, Player2.ConnectionId);
+                await GameConnection.InvokeAsync("SetPlayerTurn", Player1.ConnectionId, Player2.ConnectionId, p1handCards, p2handCards);
             }
         }
 

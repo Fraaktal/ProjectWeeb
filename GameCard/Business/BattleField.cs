@@ -30,7 +30,7 @@ namespace ProjectWeeb.GameCard.Business
             }
         }
 
-        public void SetCardForCurrentPlayer(Card card, int pos)
+        public void SetCardForPlayer1(Card card, int pos)
         {
             var position = Player1Side.FirstOrDefault(p => p.Position == pos);
             if (position != null)
@@ -39,7 +39,7 @@ namespace ProjectWeeb.GameCard.Business
             }
         }
         
-        public void SetCardForEnnemy(Card card, int pos)
+        public void SetCardForPlayer2(Card card, int pos)
         {
             var position = Player2Side.FirstOrDefault(p => p.Position == pos);
             if (position != null)

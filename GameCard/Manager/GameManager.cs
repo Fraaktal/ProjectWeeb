@@ -5,7 +5,6 @@ using System.Timers;
 using ProjectWeeb.GameCard.Business;
 using ProjectWeeb.GameCard.Business.BusinessData;
 using ProjectWeeb.GameCard.Control;
-using ProjectWeeb.GameCard.EventArg;
 
 namespace ProjectWeeb.GameCard.Manager
 {

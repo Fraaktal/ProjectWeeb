@@ -24,15 +24,20 @@ namespace ProjectWeeb.Communication
             await Clients.Client(connectionId).SendAsync("InitializeGamePlayerSide", handCards);
         }
         
-        public async Task SetPlayerTurn(string connectionIdP1, string connectionIdP2, int[] handCards)
+        public async Task SetPlayerTurn(string connectionIdP1, string connectionIdP2, int[] p1handCards, int[] p2handCards)
         {
-            Clients.Client(connectionIdP1).SendAsync("TurnChanged", true, handCards);
-            await Clients.Client(connectionIdP2).SendAsync("TurnChanged", false, null);
+            Clients.Client(connectionIdP1).SendAsync("TurnChanged", true, p1handCards);
+            await Clients.Client(connectionIdP2).SendAsync("TurnChanged", false, p2handCards);
         }
         
         public async Task LaunchTimer(string idGame)
         {
-
+            await Clients.Client(idGame).SendAsync("SetTimer");
+        }
+        
+        public async Task AskForNextTurn(string idGame)
+        {
+            await Clients.Client(idGame).SendAsync("SetNextTurn");
         }
 
         public async Task PlayCard(string idGame, string idUserS, int idCard, int position, int positionInHand)
@@ -45,7 +50,7 @@ namespace ProjectWeeb.Communication
         public async Task CardSuccesfullyPlayed(string connectionIdP1, string connectionIdP2, int[] pside, int[] handCards)
         {
             await Clients.Client(connectionIdP1).SendAsync("PlayerCardPlayed", handCards, pside);
-            await Clients.Client(connectionIdP2).SendAsync("EnemyCardPlayedClient", pside);
+            await Clients.Client(connectionIdP2).SendAsync("EnemyCardPlayedClient", pside.Reverse());
         }
     }
 }

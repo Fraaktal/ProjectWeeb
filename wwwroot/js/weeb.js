@@ -12,7 +12,6 @@ var urlParams = new URLSearchParams(window.location.search);
 var idGame = urlParams.get('gameId');
 var idUser = urlParams.get('userId');
 
-//Rapport des cartes : 39/56
 var basicWidth = 0;
 var basicHeigth = 0;
 
@@ -23,6 +22,8 @@ var drawPile = [];
 var isPlayerCurrentTurn = false;
 var cardLoaded = 0;
 var currentHand = [];
+var currentBattleFieldCurrentPlayer = [];
+var currentBattleFieldEnemyPlayer = [];
 var currentMode = "basic";
 var selectedCardId = -1;
 var selectedCardPlace = -1;
@@ -40,7 +41,8 @@ function displayCanvas() {
     basicWidth = getCardInHandWidth();
     basicHeigth = basicWidth * 56 / 39;
     placeImages();
-    placeHandCards(currentHand);
+    placeHandCards();
+    placeCardsOnBattleField();
     drawImages();
 }
 
@@ -73,20 +75,20 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/GameHub").build();
 connection.on("InitializeGamePlayerSide", function (handCards) {
     currentHand = handCards;
     placeImages();
-    placeHandCards(handCards);
+    placeHandCards();
     drawImages();
 });
 
 connection.on("TurnChanged", function (isPlayerTurn, handCards) {
-
+    currentHand = handCards;
     isPlayerCurrentTurn = isPlayerTurn;
 
-    placeHandCards(handCards);
+    placeHandCards();
     drawImages();
 
     if (isPlayerCurrentTurn) {
         //permet d'envoyer un evenement qui finira le tour du joueur s'il prends trop longtemps
-        connection.invoke("LaunchTimer", idGame, idUser).catch(function (err) {
+        connection.invoke("LaunchTimer", idGame).catch(function (err) {
             return console.error(err.toString());
         });
     }
@@ -94,13 +96,17 @@ connection.on("TurnChanged", function (isPlayerTurn, handCards) {
 
 
 connection.on("PlayerCardPlayed", function (handCards, pSide) {
-    placeHandCards(handCards);
-    placeCardsOnBattleField(pSide, false);
+    currentHand = handCards;
+    currentBattleFieldCurrentPlayer = pSide;
+    placeHandCards();
+    placeCardsOnBattleField();
     drawImages();
 });
 
 connection.on("EnemyCardPlayedClient", function (pSide) {
-    placeCardsOnBattleField(pSide, true);
+    currentBattleFieldEnemyPlayer = pSide;
+    placeHandCards();
+    placeCardsOnBattleField();
     drawImages();
 });
 
@@ -146,6 +152,11 @@ function handleClick(ge) {
             return console.error(err.toString());
         });
     }
+    else if (ge.type === "Next") {
+        connection.invoke("AskForNextTurn", idGame).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
     else {
         currentMode = "basic";
         selectedCardId = -1;
@@ -155,14 +166,13 @@ function handleClick(ge) {
 function loadCardImages() {
     var result = [];
     for (var i = 0; i < 20; i++) {
-        var next = false;
         var card = new Image();
         card.src = 'src/Cards/' + i + '.png';
         result.push(card);
 
         card.addEventListener('load', function () {
             cardLoaded += 1;
-            if (cardLoaded === 26) {
+            if (cardLoaded === 27) {
                 displayCanvas();
                 connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                     return console.error(err.toString());
@@ -175,7 +185,7 @@ function loadCardImages() {
     back.src = 'src/Cards/Back.png';
     back.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 26) {
+        if (cardLoaded === 27) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -190,7 +200,7 @@ function loadCardImages() {
     playerLife.src = 'src/Corner2.png';
     playerLife.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 26) {
+        if (cardLoaded === 27) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -205,7 +215,7 @@ function loadCardImages() {
     enemylife.src = 'src/CornerEnemy.png';
     enemylife.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 26) {
+        if (cardLoaded === 27) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -220,7 +230,7 @@ function loadCardImages() {
     cible.src = 'src/Cible.png';
     cible.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 26) {
+        if (cardLoaded === 27) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -235,7 +245,7 @@ function loadCardImages() {
     plateau.src = 'src/plateau.png';
     plateau.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 26) {
+        if (cardLoaded === 27) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -250,7 +260,7 @@ function loadCardImages() {
     fond.src = 'src/Cards/Fond.png';
     fond.addEventListener('load', function () {
         cardLoaded += 1;
-        if (cardLoaded === 26) {
+        if (cardLoaded === 27) {
             displayCanvas();
             connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
                 return console.error(err.toString());
@@ -260,6 +270,21 @@ function loadCardImages() {
     });
 
     result.push(fond);
+
+    var next = new Image();
+    next.src = 'src/btn_nextTurn.png';
+    next.addEventListener('load', function () {
+        cardLoaded += 1;
+        if (cardLoaded === 27) {
+            displayCanvas();
+            connection.invoke("PlayerConnectedOnGame", idGame, idUser).catch(function (err) {
+                return console.error(err.toString());
+            });
+
+        }
+    });
+
+    result.push(next);
 
     return result;
 }
@@ -284,7 +309,7 @@ function getCardInHandWidth() {
     return res;
 }
 
-function placeHandCards(cardsIds) {
+function placeHandCards() {
     var currentCardInHandAmount = 0;
 
     var copy = [];
@@ -296,7 +321,7 @@ function placeHandCards(cardsIds) {
     });
     gameElements = copy;
 
-    cardsIds.forEach(function (id) {
+    currentHand.forEach(function (id) {
         var xPos = (currentCardInHandAmount+1) * (basicWidth + 5) + 10;
         var yPos = totalHeight - basicHeigth - 10;
         
@@ -308,24 +333,36 @@ function placeHandCards(cardsIds) {
     });
 }
 
-function placeCardsOnBattleField(battlefield, enemy) {
+function placeCardsOnBattleField() {
     var currentPos = 0;
-
-    battlefield.forEach(function (id) {
+    currentBattleFieldEnemyPlayer.forEach(function(id) {
         if (id !== -1) {
+            var offset2 = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5) / 2;
+            var xPos = offset2 + currentPos * (5 + basicWidth * 2 / 3);
+            var yPos = totalHeight * 0.8 / 2 - basicHeigth * 2 / 3 - 30;
 
+            var type = "EnemyPlayedCard";
+            var ge = initGraphicElement(type, id, cardImages[id], xPos, yPos, basicWidth * 2 / 3, basicHeigth * 2 / 3);
+            gameElements.push(ge);
+        }
+        currentPos += 1;
+    });
+
+    currentPos = 0;
+    currentBattleFieldCurrentPlayer.forEach(function(id) {
+        if (id !== -1) {
             var offset2 = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5) / 2;
             var xPos = offset2 + currentPos * (5 + basicWidth * 2 / 3);
             var yPos = totalHeight * 0.8 / 2 + 30;
 
-            var type = enemy ? "EnemyPlayedCard" : "PlayerPlayedCard";
+            var type = "PlayerPlayedCard";
             var ge = initGraphicElement(type, id, cardImages[id], xPos, yPos, basicWidth * 2 / 3, basicHeigth * 2 / 3);
             gameElements.push(ge);
-
         }
         currentPos += 1;
     });
 }
+
 
 function placeImages() {
 
@@ -351,7 +388,15 @@ function placeImages() {
     xPos = totalWidth / 2 - basicWidth / 2;
     yPos = 2;
     id = 23;
-    ge = initGraphicElement("target", id, cardImages[id], xPos, yPos, basicWidth, basicWidth*4/7);
+    ge = initGraphicElement("Target", id, cardImages[id], xPos, yPos, basicWidth, basicWidth*4/7);
+
+    gameElements.push(ge);
+
+    //btnNext
+    xPos = totalWidth * 0.1;
+    yPos = 10;
+    id = 26;
+    ge = initGraphicElement("Next", id, cardImages[id], xPos, yPos, basicWidth * 0.5, basicWidth * 0.5);
 
     gameElements.push(ge);
 
@@ -385,8 +430,9 @@ function drawImages() {
         }
         else {
             context.save();
+            context.translate(ge.posX + ge.width, ge.posY + ge.height);
             context.rotate(Math.PI);
-            context.drawImage(ge.image, ge.posX, ge.posY, ge.width, ge.height);
+            context.drawImage(ge.image, 0, 0, ge.width, ge.height);
             context.restore();
         }
     });

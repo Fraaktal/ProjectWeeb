@@ -28,5 +28,7 @@ namespace ProjectWeeb.GameCard.Business
         public List<Card> DrawPile { get; set; }
 
         public string ConnectionId { get; set; }
+
+        public int RemainingActions { get; set; }
     }
 }
