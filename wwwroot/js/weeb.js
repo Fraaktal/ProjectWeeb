@@ -26,7 +26,7 @@ var currentBattleFieldCurrentPlayer = [];
 var currentBattleFieldEnemyPlayer = [];
 var currentMode = "basic";
 var selectedCardId = -1;
-var selectedCardPlace = -1;
+var selectedCardPosition = -1;
 
 function displayCanvas() {
 
@@ -62,7 +62,9 @@ canvas.addEventListener("mousedown", function (e) {
 var graphicElement = {
     type: "", //card //cardposition //enemycard //btnNext //ennemy
     info: "",
-    info2: "",
+    position: "",
+    life: 0,
+    stregth: 0,
     image: null,
     posX: 0,
     posY: 0,
@@ -145,15 +147,25 @@ function handleClick(ge) {
     if (ge.type === "HandCard") {
         currentMode = "CanPlayCard";
         selectedCardId = ge.info;
-        selectedCardPlace = ge.info2;
+        selectedCardPosition = ge.position;
     }
     else if (ge.type === "PlayerCardPosition" && currentMode === "CanPlayCard") {
-        connection.invoke("PlayCard", idGame, idUser, selectedCardId, ge.info, selectedCardPlace).catch(function(err) {
+        connection.invoke("PlayCard", idGame, idUser, selectedCardId, ge.info, selectedCardPosition).catch(function(err) {
             return console.error(err.toString());
         });
     }
     else if (ge.type === "Next") {
         connection.invoke("AskForNextTurn", idGame).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+    else if (ge.type === "PlayerPlayedCard") {
+        currentMode = "CanAttack";
+        selectedCardId = ge.info;
+        selectedCardPosition = ge.position;
+    }
+    else if (ge.type === "EnemyPlayedCard") {
+        connection.invoke("AttackCard", idGame, idUser, selectedCardPosition, ge.position).catch(function (err) {
             return console.error(err.toString());
         });
     }
@@ -315,18 +327,20 @@ function placeHandCards() {
     var copy = [];
 
     gameElements.forEach(function(gel) {
-        if (gel.type != "HandCard") {
+        if (gel.type !== "HandCard") {
             copy.push(gel);
         }
     });
     gameElements = copy;
 
-    currentHand.forEach(function (id) {
+    currentHand.forEach(function (card) {
         var xPos = (currentCardInHandAmount+1) * (basicWidth + 5) + 10;
         var yPos = totalHeight - basicHeigth - 10;
         
-        var ge = initGraphicElement("HandCard", id, cardImages[id], xPos, yPos, basicWidth, basicHeigth);
-        ge.info2 = currentCardInHandAmount;
+        var ge = initGraphicElement("HandCard", card[0], cardImages[card[0]], xPos, yPos, basicWidth, basicHeigth);
+        ge.position = currentCardInHandAmount;
+        ge.life = card[1];
+        ge.stregth = card[2];
         gameElements.push(ge);
 
         currentCardInHandAmount += 1;
@@ -335,28 +349,34 @@ function placeHandCards() {
 
 function placeCardsOnBattleField() {
     var currentPos = 0;
-    currentBattleFieldEnemyPlayer.forEach(function(id) {
-        if (id !== -1) {
+    currentBattleFieldEnemyPlayer.forEach(function(card) {
+        if (card[0] !== -1) {
             var offset2 = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5) / 2;
             var xPos = offset2 + currentPos * (5 + basicWidth * 2 / 3);
             var yPos = totalHeight * 0.8 / 2 - basicHeigth * 2 / 3 - 30;
 
             var type = "EnemyPlayedCard";
-            var ge = initGraphicElement(type, id, cardImages[id], xPos, yPos, basicWidth * 2 / 3, basicHeigth * 2 / 3);
+            var ge = initGraphicElement(type, card[0], cardImages[card[0]], xPos, yPos, basicWidth * 2 / 3, basicHeigth * 2 / 3);
+            ge.position = currentPos;
+            ge.life = card[1];
+            ge.stregth = card[2];
             gameElements.push(ge);
         }
         currentPos += 1;
     });
 
     currentPos = 0;
-    currentBattleFieldCurrentPlayer.forEach(function(id) {
-        if (id !== -1) {
+    currentBattleFieldCurrentPlayer.forEach(function(card) {
+        if (card[0] !== -1) {
             var offset2 = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5) / 2;
             var xPos = offset2 + currentPos * (5 + basicWidth * 2 / 3);
             var yPos = totalHeight * 0.8 / 2 + 30;
 
             var type = "PlayerPlayedCard";
-            var ge = initGraphicElement(type, id, cardImages[id], xPos, yPos, basicWidth * 2 / 3, basicHeigth * 2 / 3);
+            var ge = initGraphicElement(type, card[0], cardImages[card[0]], xPos, yPos, basicWidth * 2 / 3, basicHeigth * 2 / 3);
+            ge.position = currentPos;
+            ge.life = card[1];
+            ge.stregth = card[2];
             gameElements.push(ge);
         }
         currentPos += 1;

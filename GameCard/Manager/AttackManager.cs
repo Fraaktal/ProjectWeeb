@@ -10,20 +10,13 @@ namespace ProjectWeeb.GameCard.Manager
 {
     public class AttackManager
     {
-        public AttackManager()
+        public AttackManager(BattleField battleField)
         {
-
+            BattleField = battleField;
+            initializeAttackById();
         }
 
-        private BattleField BattleField
-        {
-            get
-            {
-                //return CWebSite.GetInstance().GameManager.GameController.BattleField;
-
-                return null;
-            }
-        }
+        private BattleField BattleField {get;set;}
 
         public Dictionary<int, Action<CardPosition, CardPosition>> AttackById { get; set; }
 
@@ -106,7 +99,7 @@ namespace ProjectWeeb.GameCard.Manager
 
             foreach (var card in cards)
             {
-                BattleField.UnsetCardForEnnemy(card.Position);
+                BattleField.UnsetCardForPlayer2(card.Position);
             }
         }
 
@@ -123,7 +116,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void Kira_Death_note(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.UnsetCardForEnnemy(arg2.Position);
+            BattleField.UnsetCardForPlayer2(arg2.Position);
         }
 
         private void Guts_Berserk(CardPosition arg1, CardPosition arg2)
@@ -140,7 +133,7 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void Monika_Sayonara(CardPosition arg1, CardPosition arg2)
         {
-            BattleField.UnsetCardForEnnemy(arg2.Position);
+            BattleField.UnsetCardForPlayer2(arg2.Position);
         }
 
         private void Sans_Bone(CardPosition arg1, CardPosition arg2)

@@ -11,10 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ProjectResources\Cards\Cards.cd" />
     <None Remove="ProjectResources\Effects\EffectsList.eft" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="ProjectResources\Cards\Cards.cd" />
     <EmbeddedResource Include="ProjectResources\Effects\EffectsList.eft" />
     <EmbeddedResource Include="wwwroot\src\Cards\12.png" />
     <EmbeddedResource Include="wwwroot\src\Cards\2.png" />

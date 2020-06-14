@@ -12,16 +12,16 @@ namespace ProjectWeeb.GameCard.Business
             InitializeBattleField();
         }
 
-        public HashSet<CardPosition> Player1Side { get; set; }
+        public List<CardPosition> Player1Side { get; set; }
 
-        public HashSet<CardPosition> Player2Side { get; set; }
+        public List<CardPosition> Player2Side { get; set; }
 
         public BattleField PreviousBattlefield { get; set; }
 
         private void InitializeBattleField()
         {
-            Player1Side = new HashSet<CardPosition>();
-            Player2Side = new HashSet<CardPosition>();
+            Player1Side = new List<CardPosition>();
+            Player2Side = new List<CardPosition>();
 
             for (int i = 0; i < 8; i++)
             {
@@ -57,7 +57,7 @@ namespace ProjectWeeb.GameCard.Business
             }
         }
         
-        public void UnsetCardForEnnemy(int pos)
+        public void UnsetCardForPlayer2(int pos)
         {
             var position = Player2Side.FirstOrDefault(p => p.Position == pos);
             if (position != null)
@@ -107,26 +107,70 @@ namespace ProjectWeeb.GameCard.Business
             return Player2Side.FirstOrDefault(p => p.Position == pos)?.Card;
         }
 
-        public int[] ComputePlayer1Side()
+        public int[][] ComputePlayer1Side()
         {
-            List<int> res = new List<int>();
+            List<int[]> res = new List<int[]>();
             foreach (var cardPosition in Player1Side)
             {
-                res.Add(cardPosition.Card?.CardId ?? -1);
+                int id = cardPosition.Card?.CardId ?? -1;
+                int life = cardPosition.Card?.Life ?? -1;
+                int st = cardPosition.Card?.Strength ?? -1;
+                res.Add(new []{id,life,st});
             }
 
             return res.ToArray();
         }
         
-        public int[] ComputePlayer2Side()
+        public int[][] ComputePlayer2Side()
         {
-            List<int> res = new List<int>();
+            List<int[]> res = new List<int[]>();
             foreach (var cardPosition in Player2Side)
             {
-                res.Add(cardPosition.Card?.CardId ?? -1);
+                int id = cardPosition.Card?.CardId ?? -1;
+                int life = cardPosition.Card?.Life ?? -1;
+                int st = cardPosition.Card?.Strength ?? -1;
+                res.Add(new[] { id, life, st });
             }
 
             return res.ToArray();
+        }
+
+        public Card GetPlayer1CardByPosition(in int positionOrigin)
+        {
+            return Player1Side.ElementAtOrDefault(positionOrigin)?.Card;
+        }
+
+        public Card GetPlayer2CardByPosition(in int positionOrigin)
+        {
+            return Player2Side.ElementAtOrDefault(positionOrigin)?.Card;
+        }
+
+        public void DamagePlayer2CardByPosition(in int positionTargeted, in int cardStrength)
+        {
+            CardPosition cardP = Player2Side.ElementAtOrDefault(positionTargeted);
+            if (cardP != null)
+            {
+                cardP.Card.Life -= cardStrength;
+
+                if (cardP.Card.Life <= 0)
+                {
+                    UnsetCardForPlayer2(positionTargeted);
+                }
+            }
+        }
+
+        public void DamagePlayer1CardByPosition(in int positionTargeted, in int cardStrength)
+        {
+            CardPosition cardP = Player1Side.ElementAtOrDefault(positionTargeted);
+            if (cardP != null)
+            {
+                cardP.Card.Life -= cardStrength;
+
+                if (cardP.Card.Life <= 0)
+                {
+                    UnsetCardForPlayer1(positionTargeted);
+                }
+            }
         }
     }
 }

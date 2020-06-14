@@ -19,12 +19,12 @@ namespace ProjectWeeb.Communication
         }
 
         
-        public async Task InitializeGame(string connectionId, int[] handCards)
+        public async Task InitializeGame(string connectionId, int[][] handCards)
         {
             await Clients.Client(connectionId).SendAsync("InitializeGamePlayerSide", handCards);
         }
         
-        public async Task SetPlayerTurn(string connectionIdP1, string connectionIdP2, int[] p1handCards, int[] p2handCards)
+        public async Task SetPlayerTurn(string connectionIdP1, string connectionIdP2, int[][] p1handCards, int[][] p2handCards)
         {
             Clients.Client(connectionIdP1).SendAsync("TurnChanged", true, p1handCards);
             await Clients.Client(connectionIdP2).SendAsync("TurnChanged", false, p2handCards);
@@ -47,10 +47,17 @@ namespace ProjectWeeb.Communication
             await Clients.Client(idGame).SendAsync("CardPlayed", idUser, idCard, position, positionInHand);
         }
 
-        public async Task CardSuccesfullyPlayed(string connectionIdP1, string connectionIdP2, int[] pside, int[] handCards)
+        public async Task CardSuccesfullyPlayed(string connectionIdP1, string connectionIdP2, int[][] pside, int[][] handCards)
         {
             await Clients.Client(connectionIdP1).SendAsync("PlayerCardPlayed", handCards, pside);
             await Clients.Client(connectionIdP2).SendAsync("EnemyCardPlayedClient", pside.Reverse());
+        }
+
+        public async Task AttackCard(string idGame, string idUserS, int positionOrigin, int positionTargeted)
+        {
+            int idUser = int.Parse(idUserS);
+
+            await Clients.Client(idGame).SendAsync("AttackCard", idUser, positionOrigin, positionTargeted);
         }
     }
 }

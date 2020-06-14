@@ -14,20 +14,19 @@ namespace ProjectWeeb.GameCard.Business.BusinessData
 
         }
 
-        //TODO initialiser les cartes depuis un fichier comme les effets
-        public Card(int id, string name, HashSet<Effect> effects, string path)
+        public Card(int id, string name,int life, int strength, HashSet<Effect> effects)
         {
             CardId = id;
             Name = name;
             Effects = effects;
-            ImagePath = path;
             CurrentStatus = Status.InDeck;
+            Strength = strength;
+            Life = life;
+            Shield = 0;
         }
         public int CardId { get; set; }
 
         public HashSet<Effect> Effects { get; set; }
-
-        public string ImagePath { get; set; }
 
         public string Name { get; set; }
 
