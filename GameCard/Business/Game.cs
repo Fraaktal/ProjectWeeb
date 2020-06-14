@@ -106,22 +106,24 @@ namespace ProjectWeeb.GameCard.Business
         private async Task CardPlayed(int idUser, int idCard, int position, int positionInHand)
         {
             int[] handCards = null;
-            if (idUser == Player1.IdUser)
+            if (idUser == Player1.IdUser && Player1.RemainingActions > 0)
             {
                 Card card = CardManager.GetInstance().GetCardById(idCard);
                 BattleField.SetCardForPlayer1(card,position);
                 Player1.CurrentHand.RemoveAt(positionInHand);
                 var pSide = BattleField.ComputePlayer1Side();
                 handCards = GetCardsIds(Player1.CurrentHand);
+                Player1.RemainingActions--;
                 await GameConnection.InvokeAsync("CardSuccesfullyPlayed", Player1.ConnectionId, Player2.ConnectionId, pSide, handCards);
             }
-            else
+            else if(idUser == Player2.IdUser && Player2.RemainingActions > 0)
             {
                 Card card = CardManager.GetInstance().GetCardById(idCard);
                 BattleField.SetCardForPlayer2(card, position);
                 Player2.CurrentHand.RemoveAt(positionInHand);
                 var pSide = BattleField.ComputePlayer2Side();
                 handCards = GetCardsIds(Player2.CurrentHand);
+                Player2.RemainingActions--;
                 await GameConnection.InvokeAsync("CardSuccesfullyPlayed", Player2.ConnectionId, Player1.ConnectionId, pSide, handCards);
             }
         }
@@ -134,7 +136,7 @@ namespace ProjectWeeb.GameCard.Business
             if (idPlayer == Player1.IdUser)
             {
                 Player1.ConnectionId = connectionId;
-                drawnCards = DrawCards(Player1.DrawPile, 5);
+                drawnCards = DrawCards(Player1.DrawPile, 5, Player1.CurrentHand.Count);
 
                 foreach (var drawnCard in drawnCards)
                 {
@@ -146,7 +148,7 @@ namespace ProjectWeeb.GameCard.Business
             else if (idPlayer == Player2.IdUser)
             {
                 Player2.ConnectionId = connectionId;
-                drawnCards = DrawCards(Player2.DrawPile, 5);
+                drawnCards = DrawCards(Player2.DrawPile, 5, Player2.CurrentHand.Count);
 
                 foreach (var drawnCard in drawnCards)
                 {
@@ -163,6 +165,8 @@ namespace ProjectWeeb.GameCard.Business
                 CurrentPlayerIdTurn = Player1.IdUser;
                 int[] p1handCards = GetCardsIds(Player1.CurrentHand);
                 int[] p2handCards = GetCardsIds(Player2.CurrentHand);
+                Player1.RemainingActions = 3;
+                Player2.RemainingActions = 3;
                 await GameConnection.InvokeAsync("SetPlayerTurn", Player1.ConnectionId, Player2.ConnectionId, p1handCards, p2handCards);
             }
         }
@@ -183,14 +187,18 @@ namespace ProjectWeeb.GameCard.Business
             return result;
         }
 
-        private List<Card> DrawCards(List<Card> cards, int amount)
+        private List<Card> DrawCards(List<Card> cards, int amount, int currentCount)
         {
             List<Card> result = new List<Card>();
             for (int i = 0; i < amount; i++)
             {
-                Card card = cards.Last();
-                result.Add(card);
-                cards.RemoveAt(cards.Count-1);
+                if (currentCount < 8)
+                {
+                    Card card = cards.Last();
+                    result.Add(card);
+                    cards.RemoveAt(cards.Count - 1);
+                    currentCount++;
+                }
             }
 
             return result;
@@ -212,16 +220,32 @@ namespace ProjectWeeb.GameCard.Business
 
         private async void EndTurnOfCurrentPlayer(object sender, ElapsedEventArgs e)
         {
-            int[] p1handCards = GetCardsIds(Player1.CurrentHand);
-            int[] p2handCards = GetCardsIds(Player2.CurrentHand);
             if (Player1.IdUser == CurrentPlayerIdTurn)
             {
+                var drawnCards = DrawCards(Player2.DrawPile, 2, Player2.CurrentHand.Count);
+                foreach (var drawnCard in drawnCards)
+                {
+                    Player2.CurrentHand.Add(drawnCard);
+                }
+
+                int[] p1handCards = GetCardsIds(Player1.CurrentHand);
+                int[] p2handCards = GetCardsIds(Player2.CurrentHand);
                 CurrentPlayerIdTurn = Player2.IdUser;
+                Player2.RemainingActions = 3;
                 await GameConnection.InvokeAsync("SetPlayerTurn", Player2.ConnectionId, Player1.ConnectionId, p2handCards, p1handCards);
             }
             else
             {
+                var drawnCards = DrawCards(Player1.DrawPile, 2, Player1.CurrentHand.Count);
+                foreach (var drawnCard in drawnCards)
+                {
+                    Player1.CurrentHand.Add(drawnCard);
+                }
+
+                int[] p1handCards = GetCardsIds(Player1.CurrentHand);
+                int[] p2handCards = GetCardsIds(Player2.CurrentHand);
                 CurrentPlayerIdTurn = Player1.IdUser;
+                Player1.RemainingActions = 3;
                 await GameConnection.InvokeAsync("SetPlayerTurn", Player1.ConnectionId, Player2.ConnectionId, p1handCards, p2handCards);
             }
         }

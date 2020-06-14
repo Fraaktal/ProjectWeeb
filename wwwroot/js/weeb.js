@@ -400,6 +400,15 @@ function placeImages() {
 
     gameElements.push(ge);
 
+    //drawPile
+    xPos = 9 * (basicWidth + 5);
+    yPos = totalHeight - basicHeigth - 10;
+
+    id = 20;
+    ge = initGraphicElement("Next", id, cardImages[id], xPos, yPos, basicWidth, basicHeigth);
+
+    gameElements.push(ge);
+
     for (var i = 0; i < 8; i++) {
         var offset = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5)/ 2;
         xPos = offset + i * (5 + basicWidth * 2 / 3);
