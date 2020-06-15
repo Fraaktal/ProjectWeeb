@@ -13,16 +13,16 @@ namespace ProjectWeeb.GameCard.Manager
         public AttackManager(BattleField battleField)
         {
             BattleField = battleField;
-            initializeAttackById();
+            AttackById = initializeAttackById();
         }
 
         private BattleField BattleField {get;set;}
 
-        public Dictionary<int, Action<CardPosition, CardPosition>> AttackById { get; set; }
+        public Dictionary<int, Action<int, int, bool>> AttackById { get; set; }
 
-        public Dictionary<int, Action<CardPosition, CardPosition>> initializeAttackById()
+        public Dictionary<int, Action<int, int, bool>> initializeAttackById()
         {
-            Dictionary<int, Action<CardPosition, CardPosition>> result =new Dictionary<int, Action<CardPosition, CardPosition>>
+            Dictionary<int, Action<int, int, bool>> result =new Dictionary<int, Action<int, int, bool>>
             {
                 {0, BasicAttack},
                 {1, Megumin_Explosioooon},
@@ -56,115 +56,184 @@ namespace ProjectWeeb.GameCard.Manager
             return result;
         }
 
-        private void BasicAttack(CardPosition arg1, CardPosition arg2)
+        private void BasicAttack(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.GetEnnemyCard(arg2).Life -= arg1.Card.Strength;
-        }
-
-        private void Megumin_Explosioooon(CardPosition arg1, CardPosition arg2)
-        {
-            BattleField.Player2Side.Clear();
-            BattleField.GetPlayerCard(arg1).CurrentStatus = Card.Status.Sleeping;
-        }
-
-        private void SeeleAttack(CardPosition arg1, CardPosition arg2)
-        {
-            for (int i = 0; i < 2; i++)
+            if (isPlayer2Targeted)
             {
-                BasicAttack(arg1, arg2);
+                BattleField.GetPlayer2CardByPosition(target).Life -= BattleField.GetPlayer1CardByPosition(origin).Strength;
+            }
+            else
+            {
+                BattleField.GetPlayer2CardByPosition(target).Life -= BattleField.GetPlayer1CardByPosition(origin).Strength;
             }
         }
 
-        private void Joker_All_Out_Attack(CardPosition arg1, CardPosition arg2)
+        private void Megumin_Explosioooon(int origin, int target, bool isPlayer2Targeted)
+        {
+            if (isPlayer2Targeted)
+            {
+                BattleField.Player2Side.Clear();
+                BattleField.GetPlayer1CardByPosition(origin).CurrentStatus = Card.Status.Sleeping;
+            }
+            else
+            {
+                BattleField.Player1Side.Clear();
+                BattleField.GetPlayer1CardByPosition(origin).CurrentStatus = Card.Status.Sleeping;
+            }
+        }
+
+        private void SeeleAttack(int origin, int target, bool isPlayer2Targeted)
+        {
+
+            for (int i = 0; i < 2; i++)
+            {
+                BasicAttack(origin, target, isPlayer2Targeted);
+            }
+        }
+
+        private void Joker_All_Out_Attack(int origin, int target, bool isPlayer2Targeted)
         {
             foreach (var cardPosition in BattleField.Player1Side)
             {
-                BasicAttack(cardPosition, arg2);
+                BasicAttack(cardPosition.Position, target, isPlayer2Targeted);
             }
         }
 
-        private void IronMan_Rayon_laser(CardPosition arg1, CardPosition arg2)
+        private void IronMan_Rayon_laser(int origin, int target, bool isPlayer2Targeted)
         {
-            var cards = BattleField.GetEnnemyCardColumn(arg2);
-
-            foreach (var card in cards)
+            for(var i = 0;i<3;i++)
             {
-                BasicAttack(arg1,card);
+                BasicAttack(origin, target, isPlayer2Targeted);
             }
         }
 
-        private void IronMan_And_I_am_Iron_Man(CardPosition arg1, CardPosition arg2)
+        private void IronMan_And_I_am_Iron_Man(int origin, int target, bool isPlayer2Targeted)
         {
-            List<CardPosition> cards = BattleField.GetHalfEnnemies();
-
-            foreach (var card in cards)
+            if (isPlayer2Targeted)
             {
-                BattleField.UnsetCardForPlayer2(card.Position);
+                List<CardPosition> cards = BattleField.GetHalfPlayer2();
+
+                foreach (var card in cards)
+                {
+                    BattleField.UnsetCardForPlayer2(card.Position);
+                }
+            }
+            else
+            {
+                List<CardPosition> cards = BattleField.GetHalfPlayer1();
+
+                foreach (var card in cards)
+                {
+                    BattleField.UnsetCardForPlayer2(card.Position);
+                }
+            }
+            
+        }
+
+        private void IronMan_Bleeding_Edge_Armor(int origin, int target, bool isPlayer2Targeted)
+        {
+            if (isPlayer2Targeted)
+            {
+                BattleField.GetPlayer2CardByPosition(target).Shield = 5;
+            }
+            else
+            {
+                BattleField.GetPlayer1CardByPosition(target).Shield = 5;
             }
         }
 
-        private void IronMan_Bleeding_Edge_Armor(CardPosition arg1, CardPosition arg2)
+        private void SaikiKusuo_Retour_arriere(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.GetPlayerCard(arg1).Shield = 5;
+            //Card card = BattleField.PreviousBattlefield.GetPlayerCard(arg2);
+            //BattleField.SetCardForPlayer1(card, arg2.Position);
         }
 
-        private void SaikiKusuo_Retour_arriere(CardPosition arg1, CardPosition arg2)
+        private void Kira_Death_note(int origin, int target, bool isPlayer2Targeted)
         {
-            Card card = BattleField.PreviousBattlefield.GetPlayerCard(arg2);
-            BattleField.SetCardForPlayer1(card, arg2.Position);
+            if (isPlayer2Targeted)
+            {
+                BattleField.UnsetCardForPlayer2(target);
+            }
+            else
+            {
+                BattleField.UnsetCardForPlayer1(target);
+            }
         }
 
-        private void Kira_Death_note(CardPosition arg1, CardPosition arg2)
+        private void Guts_Berserk(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.UnsetCardForPlayer2(arg2.Position);
+            BasicAttack(origin, target, isPlayer2Targeted);
+            if (target > 0)
+            {
+                BasicAttack(origin, target - 1, isPlayer2Targeted);
+            }
+
+            if (target < 7)
+            {
+                BasicAttack(origin, target + 1, isPlayer2Targeted);
+            }
         }
 
-        private void Guts_Berserk(CardPosition arg1, CardPosition arg2)
-        {
-            BattleField.GetEnnemyCardByPosition(arg2.Position -1).Life -= 1;
-            BattleField.GetEnnemyCardByPosition(arg2.Position +1).Life -= 1;
-            BattleField.GetEnnemyCard(arg2);
-        }
-
-        private void AllMight_La_cavalerie_est_la(CardPosition arg1, CardPosition arg2)
+        private void AllMight_La_cavalerie_est_la(int origin, int target, bool isPlayer2Targeted)
         {
             throw new NotImplementedException();
         }
 
-        private void Monika_Sayonara(CardPosition arg1, CardPosition arg2)
+        private void Monika_Sayonara(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.UnsetCardForPlayer2(arg2.Position);
+            if (isPlayer2Targeted)
+            {
+                BattleField.UnsetCardForPlayer2(target);
+            }
+            else
+            {
+                BattleField.UnsetCardForPlayer1(target);
+            }
         }
 
-        private void Sans_Bone(CardPosition arg1, CardPosition arg2)
+        private void Sans_Bone(int origin, int target, bool isPlayer2Targeted)
         {
             Random rand = new Random();
             int attaques = (int) rand.NextDouble() * 3;
             for (int i = 0; i < attaques; i++)
             {
-                BasicAttack(arg1,arg2);
+                BasicAttack(origin, target, isPlayer2Targeted);
             }
         }
 
-        private void Pikachu_Pika_pika(CardPosition arg1, CardPosition arg2)
+        private void Pikachu_Pika_pika(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.GetEnnemyCard(arg2).CurrentStatus = Card.Status.Confuse;
+            if(isPlayer2Targeted)
+            {
+                BattleField.GetPlayer2CardByPosition(target).CurrentStatus = Card.Status.Confuse;
+            }
+            else
+            {
+                BattleField.GetPlayer1CardByPosition(target).CurrentStatus = Card.Status.Confuse;
+            }
         }
 
-        private void Pikachu_Tonerre(CardPosition arg1, CardPosition arg2)
+        private void Pikachu_Tonerre(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.GetEnnemyCard(arg2).Life -= arg1.Card.Strength + 3;
+            if (isPlayer2Targeted)
+            {
+                BattleField.GetPlayer2CardByPosition(target).Life -= BattleField.GetPlayer1CardByPosition(origin).Strength + 3;
+            }
+            else
+            {
+                BattleField.GetPlayer1CardByPosition(target).Life -= BattleField.GetPlayer2CardByPosition(origin).Strength + 3;
+            }
         }
 
-        private void Sonic_Attaque_rapide(CardPosition arg1, CardPosition arg2)
+        private void Sonic_Attaque_rapide(int origin, int target, bool isPlayer2Targeted)
         {
             for (int i = 0; i < 3; i++)
             {
-                BasicAttack(arg1, arg2);
+                BasicAttack(origin, target, isPlayer2Targeted);
             }
         }
 
-        private void Zelda_Princesse_Hyrule(CardPosition arg1, CardPosition arg2)
+        private void Zelda_Princesse_Hyrule(int origin, int target, bool isPlayer2Targeted)
         {
             foreach (var cardPosition in BattleField.Player1Side)
             {
@@ -172,44 +241,53 @@ namespace ProjectWeeb.GameCard.Manager
             }
         }
 
-        private void Mustang_Snap(CardPosition arg1, CardPosition arg2)
+        private void Mustang_Snap(int origin, int target, bool isPlayer2Targeted)
         {
             throw new NotImplementedException();
         }
 
-        private void Asuna_Protecc(CardPosition arg1, CardPosition arg2)
+        private void Asuna_Protecc(int origin, int target, bool isPlayer2Targeted)
         {
             throw new NotImplementedException();
         }
 
-        private void Shiro_Puissance_random(CardPosition arg1, CardPosition arg2)
+        private void Shiro_Puissance_random(int origin, int target, bool isPlayer2Targeted)
         {
-            Random rand = new Random();
-            int power = (int)rand.NextDouble() * 6 + 1;
-            BattleField.GetEnnemyCard(arg2).Life -= power;
+            if (isPlayer2Targeted)
+            {
+                Random rand = new Random();
+                int power = (int)rand.NextDouble() * 6 + 1;
+                BattleField.GetPlayer2CardByPosition(target).Life -= power;
+            }
+            else
+            {
+                Random rand = new Random();
+                int power = (int)rand.NextDouble() * 6 + 1;
+                BattleField.GetPlayer1CardByPosition(target).Life -= power;
+            }
         }
 
-        private void Aqua_Inutile(CardPosition arg1, CardPosition arg2)
+        private void Aqua_Inutile(int origin, int target, bool isPlayer2Targeted)
         {
             //Je suis un commentaire
         }
 
-        private void Aqua_Reveil_des_dieux(CardPosition arg1, CardPosition arg2)
+        private void Aqua_Reveil_des_dieux(int origin, int target, bool isPlayer2Targeted)
         {
             throw new NotImplementedException();
         }
 
-        private void Yuno_Genocide(CardPosition arg1, CardPosition arg2)
+        private void Yuno_Genocide(int origin, int target, bool isPlayer2Targeted)
         {
             throw new NotImplementedException();
         }
 
-        private void Mikasa_Deplacement_Aerien(CardPosition arg1, CardPosition arg2)
+        private void Mikasa_Deplacement_Aerien(int origin, int target, bool isPlayer2Targeted)
         {
             throw new NotImplementedException();
         }
 
-        private void Makise_Time_travel(CardPosition arg1, CardPosition arg2)
+        private void Makise_Time_travel(int origin, int target, bool isPlayer2Targeted)
         {
             throw new NotImplementedException();
         }

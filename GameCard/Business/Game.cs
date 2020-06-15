@@ -28,6 +28,8 @@ namespace ProjectWeeb.GameCard.Business
             Connect();
 
             ListenControllerEvent();
+
+            AttackManager = new AttackManager(BattleField);
         }
         public int CurrentPlayerIdTurn { get; set; }
 
@@ -36,6 +38,8 @@ namespace ProjectWeeb.GameCard.Business
         public Player Player2 { get; set; }
 
         private Timer Timer { get; set; }
+
+        private AttackManager AttackManager { get; set; }
 
         public string GameId
         {
@@ -200,7 +204,9 @@ namespace ProjectWeeb.GameCard.Business
             {
                 Card card = BattleField.GetPlayer1CardByPosition(positionOrigin);
 
-                BattleField.DamagePlayer2CardByPosition(positionTargeted, card.Strength);
+                AttackManager.AttackById[0].Invoke(positionOrigin,positionTargeted,true);
+
+                //BattleField.DamagePlayer2CardByPosition(positionTargeted, card.Strength);
 
                 Player1.RemainingActions--;
 
@@ -210,7 +216,8 @@ namespace ProjectWeeb.GameCard.Business
             {
                 Card card = BattleField.GetPlayer2CardByPosition(positionOrigin);
 
-                BattleField.DamagePlayer1CardByPosition(positionTargeted, card.Strength);
+                AttackManager.AttackById[0].Invoke(positionOrigin, positionTargeted, false);
+                //BattleField.DamagePlayer1CardByPosition(positionTargeted, card.Strength);
 
                 Player2.RemainingActions--;
             }

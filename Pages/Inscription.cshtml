@@ -1,13 +1,15 @@
 ﻿@page
 @model ProjectWeeb.Pages.InscriptionModel
 @{
+    <script src="js/error.js"></script>
+
     <div class="container">
         <div id="background">
             <img src="/src/Accueil_background.png" class="stretch" alt="" />
         </div>
-       
+
         <form method="POST" class="Form" id="inscriptionForm">
-            <label for="login" >Username</label>
+            <label for="login">Username</label>
             <input type="text" name="login" id="login" maxlength="18" required />
             <label for="password">Password</label>
             <input type="password" name="password" id="password" required />
@@ -16,7 +18,4 @@
             <input type="submit" value="Submit" class="Button_submit" />
         </form>
     </div>
-
-    <script src="js/error.js"></script>
-
 }

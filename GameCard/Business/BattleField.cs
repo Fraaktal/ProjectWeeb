@@ -66,17 +66,17 @@ namespace ProjectWeeb.GameCard.Business
             }
         }
 
-        public Card GetEnnemyCard(CardPosition cardPosition)
+        public Card GetPlayer2Card(CardPosition cardPosition)
         {
             return Player2Side.FirstOrDefault(p => p.Position == cardPosition.Position)?.Card;
         }
 
-        public Card GetPlayerCard(CardPosition cardPosition)
+        public Card GetPlayer1Card(CardPosition cardPosition)
         {
             return Player1Side.FirstOrDefault(p => p.Position == cardPosition.Position)?.Card;
         }
 
-        public List<CardPosition> GetEnnemyCardColumn(CardPosition cardPosition)
+        public List<CardPosition> GetPlayer2CardColumn(CardPosition cardPosition)
         {
             List<CardPosition> result = new List<CardPosition>();
             foreach (var cp in Player2Side)
@@ -90,7 +90,7 @@ namespace ProjectWeeb.GameCard.Business
             return result;
         }
 
-        public List<CardPosition> GetHalfEnnemies()
+        public List<CardPosition> GetHalfPlayer2()
         {
             List<CardPosition> result = new List<CardPosition>();
 
@@ -102,9 +102,16 @@ namespace ProjectWeeb.GameCard.Business
             return result;
         }
 
-        public Card GetEnnemyCardByPosition(int pos)
+        public List<CardPosition> GetHalfPlayer1()
         {
-            return Player2Side.FirstOrDefault(p => p.Position == pos)?.Card;
+            List<CardPosition> result = new List<CardPosition>();
+
+            for (int i = 0; i < Player1Side.Count; i += 2)
+            {
+                result.Add(Player1Side.ElementAt(i));
+            }
+
+            return result;
         }
 
         public int[][] ComputePlayer1Side()
@@ -172,5 +179,7 @@ namespace ProjectWeeb.GameCard.Business
                 }
             }
         }
+
+      
     }
 }
