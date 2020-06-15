@@ -20,7 +20,7 @@ namespace ProjectWeeb.Pages
             
         }
 
-        public void OnPost()
+        public async Task<IActionResult> OnPost()
         {
             string login = Request.Form["login"];
             string password = Request.Form["password"];
@@ -36,9 +36,11 @@ namespace ProjectWeeb.Pages
             }
             else
             {
-                Response.WriteAsync("<script>alert('Erreur mot de passe ou login incorrect');</script>");
+                
+                return RedirectToPage("Connexion", "idInfo", new { idInfo = 4});
             }
 
+            return null;
         }
     }
 }

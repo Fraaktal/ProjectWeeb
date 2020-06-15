@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectWeeb.GameCard.Control;
 
@@ -10,7 +12,7 @@ namespace ProjectWeeb.Pages
 
         }
 
-        public void OnPost()
+        public async Task<IActionResult> OnPost()
         {
             string login = Request.Form["login"];
             string password = Request.Form["password"];
@@ -21,16 +23,17 @@ namespace ProjectWeeb.Pages
 
                 if (result)
                 {
-                    Response.Redirect("/Connexion");
+                    return RedirectToPage("Connexion", "idInfo", new { idInfo = 3 });
+                }
+                else
+                {
+                    return RedirectToPage("Inscription", "idInfo", new { idInfo = 2 });
                 }
             }
             else
             {
-                
+                return RedirectToPage("Inscription", "idInfo", new { idInfo = 1 });
             }
-            
-            //TODO display errors
-
         }
     }
 }

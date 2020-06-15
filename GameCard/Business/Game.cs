@@ -194,6 +194,8 @@ namespace ProjectWeeb.GameCard.Business
 
         private async Task AttackCard(int idUser, int positionOrigin, int positionTargeted)
         {
+            //Inversion
+            positionTargeted = 7 - positionTargeted;
             if (Player1.IdUser == idUser)
             {
                 Card card = BattleField.GetPlayer1CardByPosition(positionOrigin);
