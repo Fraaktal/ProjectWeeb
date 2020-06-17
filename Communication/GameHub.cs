@@ -19,11 +19,17 @@ namespace ProjectWeeb.Communication
         }
 
         
-        public async Task InitializeGame(string connectionId, int[][] handCards)
+        public async Task InitializeGame(string connectionId, int life, string name,int[][] handCards, string nameOtherPlayer, int otherPlayerLife)
         {
-            await Clients.Client(connectionId).SendAsync("InitializeGamePlayerSide", handCards);
+            await Clients.Client(connectionId).SendAsync("InitializeGamePlayerSide",
+                name,life, handCards, nameOtherPlayer, otherPlayerLife);
         }
-        
+
+        public async Task EnemyConnected(string connectionId, int life, string name)
+        {
+            await Clients.Client(connectionId).SendAsync("OtherPlayerConnected", name, life);
+        }
+
         public async Task SetPlayerTurn(string connectionIdP1, string connectionIdP2, int[][] p1handCards, int[][] p2handCards)
         {
             Clients.Client(connectionIdP1).SendAsync("TurnChanged", true, p1handCards);

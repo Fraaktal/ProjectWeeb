@@ -1,5 +1,6 @@
 ﻿"use strict";
 
+
 window.addEventListener("resize", displayCanvas);
 
 var canvas = document.querySelector('#Canvas');
@@ -27,6 +28,10 @@ var currentBattleFieldEnemyPlayer = [];
 var currentMode = "basic";
 var selectedCardId = -1;
 var selectedCardPosition = -1;
+var enemyName = "";
+var playerName = "";
+var enemyLife = "";
+var playerLife = "";
 
 function displayCanvas() {
 
@@ -40,10 +45,7 @@ function displayCanvas() {
 
     basicWidth = getCardInHandWidth();
     basicHeigth = basicWidth * 56 / 39;
-    placeImages();
-    placeHandCards();
-    placeCardsOnBattleField();
-    drawImages();
+    doPlaceAndDraw();
 }
 
 canvas.addEventListener("mousedown", function (e) {
@@ -52,7 +54,6 @@ canvas.addEventListener("mousedown", function (e) {
         var x = pos[0];
         var y = pos[1];
 
-        //Différents état : endTurn, putCard, selectPlayedCard, selectHandCard, selectEnnemyCard, etc
         var ge = getGameElementOfClick(x, y);
         handleClick(ge, x, y);
     }
@@ -60,7 +61,7 @@ canvas.addEventListener("mousedown", function (e) {
 
 //Classe qui permettra de stocker l'emplacement des images sur l'écran avec la place prise pour facilement gérer les evenements au click
 var graphicElement = {
-    type: "", //card //cardposition //enemycard //btnNext //ennemy
+    type: "",
     info: "",
     position: "",
     life: 0,
@@ -74,11 +75,25 @@ var graphicElement = {
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/GameHub").build();
 
-connection.on("InitializeGamePlayerSide", function (handCards) {
+connection.on("InitializeGamePlayerSide", function (name, life, handCards, otherPlayerName, otherPlayerLife) {
     currentHand = handCards;
-    placeImages();
-    placeHandCards();
-    drawImages();
+    playerName = name;
+    enemyName = otherPlayerName;
+    playerLife = life;
+    enemyLife = otherPlayerLife !== -1 ? otherPlayerLife : "";
+    doPlaceAndDraw();
+});
+
+connection.on("OtherPlayerConnected", function (name, life) {
+    enemyName = name;
+    enemyLife = life;
+    doPlaceAndDraw();
+});
+
+connection.on("CardAttackedSuccessfuly", function (pSide, eSide) {
+    currentBattleFieldEnemyPlayer = eSide;
+    currentBattleFieldCurrentPlayer = pSide;
+    doPlaceAndDraw();
 });
 
 connection.on("TurnChanged", function (isPlayerTurn, handCards) {
@@ -383,6 +398,46 @@ function placeCardsOnBattleField() {
     });
 }
 
+function placeText() {
+    //IL FAUT afficher les vies des cartes, les noms des joueurs et les vies des joueurs et le nombre d'action
+
+    var textSize = 15;
+    
+    //Player Name
+
+    var xPos = basicWidth * 0.2;
+    var yPos = totalHeight - basicHeigth * 0.75;
+
+    var ge = initGraphicElement("Text", playerName, null, xPos, yPos, textSize,0);
+    gameElements.push(ge);
+
+    //Player Life
+
+    xPos = basicWidth * 0.4;
+    yPos = totalHeight - basicHeigth * 0.35;
+
+    ge = initGraphicElement("Text", playerLife, null, xPos, yPos, 0, 0);
+    gameElements.push(ge);
+
+
+    //Enemy Name
+
+    xPos = totalWidth - basicWidth * 0.8;
+    yPos = basicHeigth * 0.25;
+
+    ge = initGraphicElement("Text", enemyName, null, xPos, yPos, 0, 0);
+    gameElements.push(ge);
+    
+    //Enemy Life
+
+    xPos = totalWidth - basicWidth * 0.6;
+    yPos = basicHeigth * 0.65;
+
+    ge = initGraphicElement("Text", enemyLife, null, xPos, yPos, 0, 0);
+    gameElements.push(ge);
+
+
+}
 
 function placeImages() {
 
@@ -451,18 +506,32 @@ function placeImages() {
 
 }
 
+function doPlaceAndDraw() {
+    gameElements = [];
+    placeImages();
+    placeHandCards();
+    placeCardsOnBattleField();
+    placeText();
+    drawImages();
+}
+
 function drawImages() {
     context.drawImage(cardImages[24], 0, 0, context.canvas.width, context.canvas.height);
     gameElements.forEach(function (ge) {
-        if (ge.type !== "EnemyPlayedCard") {
-            context.drawImage(ge.image, ge.posX, ge.posY, ge.width, ge.height);
-        }
-        else {
+        if (ge.type === "EnemyPlayedCard") {
             context.save();
             context.translate(ge.posX + ge.width, ge.posY + ge.height);
             context.rotate(Math.PI);
             context.drawImage(ge.image, 0, 0, ge.width, ge.height);
             context.restore();
+        }
+        if (ge.type === "Text") {
+            context.font = "bold 22pt Calibri,Geneva,Arial"; //TODO responsive
+            context.fillStyle = "#f5be27";
+            context.fillText(ge.info, ge.posX, ge.posY);
+        }
+        else {
+            context.drawImage(ge.image, ge.posX, ge.posY, ge.width, ge.height);
         }
     });
 }

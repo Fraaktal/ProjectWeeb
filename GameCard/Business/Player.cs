@@ -13,6 +13,7 @@ namespace ProjectWeeb.GameCard.Business
             Hp = 20;
             DrawPile = deck.Cards;
             CurrentHand = new List<Card>();
+            IsConnected = false;
         }
 
         public string Pseudo { get; set; }
@@ -30,5 +31,7 @@ namespace ProjectWeeb.GameCard.Business
         public string ConnectionId { get; set; }
 
         public int RemainingActions { get; set; }
+
+        public bool IsConnected { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Composition.Hosting.Core;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
@@ -16,9 +17,7 @@ namespace ProjectWeeb.GameCard.Business
         {
             Player1 = p1;
             Date = DateTime.Now;
-
-            IsGameStarted = false;
-
+            
             BattleField = new BattleField();
 
             GameConnection = new HubConnectionBuilder().WithUrl("http://trucmachin/GameHub").Build();
@@ -47,13 +46,6 @@ namespace ProjectWeeb.GameCard.Business
         }
 
         public DateTime Date { get; set; }
-
-        public bool AllPlayerConnected
-        {
-            get { return Player1 != null && Player2 != null; }
-        }
-
-        public bool IsGameStarted { get; set; }
 
         public BattleField BattleField { get; set; }
 
@@ -98,7 +90,7 @@ namespace ProjectWeeb.GameCard.Business
 
         private async Task PlayerConnected(int idPlayer, string connectionId)
         {
-            if (IsGameStarted)
+            if (Player1 != null && Player1.IdUser == idPlayer && Player1.IsConnected || Player2 != null && Player2.IdUser == idPlayer && Player2.IsConnected)
             {
                 await ReconnectPlayer(idPlayer,connectionId);
             }
@@ -138,6 +130,10 @@ namespace ProjectWeeb.GameCard.Business
         {
             int[][] handCards = null;
             List<Card> drawnCards = null;
+            int life = -1;
+            int otherPlayerLife = -1;
+            string name = null;
+            string otherPlayerName = "";
 
             if (idPlayer == Player1.IdUser)
             {
@@ -149,7 +145,20 @@ namespace ProjectWeeb.GameCard.Business
                     Player1.CurrentHand.Add(drawnCard);
                 }
 
+                life = Player1.Hp;
+                name = Player1.Pseudo;
+
                 handCards = ComputeCards(Player1.CurrentHand);
+
+                Player1.IsConnected = true;
+
+                if (Player2?.ConnectionId != null)
+                {
+                    await GameConnection.InvokeAsync("EnemyConnected", Player2.ConnectionId, life, name);
+                    otherPlayerName = Player2.Pseudo;
+                    otherPlayerLife = Player2.Hp;
+                }
+
             }
             else if (idPlayer == Player2.IdUser)
             {
@@ -161,12 +170,25 @@ namespace ProjectWeeb.GameCard.Business
                     Player2.CurrentHand.Add(drawnCard);
                 }
 
+                life = Player2.Hp;
+                name = Player2.Pseudo;
+
                 handCards = ComputeCards(Player2.CurrentHand);
+
+                Player2.IsConnected = true;
+                
+                if (Player1?.ConnectionId != null)
+                {
+                    await GameConnection.InvokeAsync("EnemyConnected", Player1.ConnectionId, life, name);
+                    otherPlayerName = Player1.Pseudo;
+                    otherPlayerLife = Player1.Hp;
+                }
+
             }
 
-            await GameConnection.InvokeAsync("InitializeGame", connectionId, handCards);
+            await GameConnection.InvokeAsync("InitializeGame", connectionId,life, name, handCards, otherPlayerName, otherPlayerLife);
 
-            if (AllPlayerConnected)
+            if (Player1 != null && Player2 != null)
             {
                 CurrentPlayerIdTurn = Player1.IdUser;
                 int[][] p1handCards = ComputeCards(Player1.CurrentHand);
@@ -203,7 +225,6 @@ namespace ProjectWeeb.GameCard.Business
             if (Player1.IdUser == idUser)
             {
                 Card card = BattleField.GetPlayer1CardByPosition(positionOrigin);
-
                 AttackManager.AttackById[0].Invoke(positionOrigin,positionTargeted,true);
 
                 //BattleField.DamagePlayer2CardByPosition(positionTargeted, card.Strength);
