@@ -16,9 +16,7 @@ namespace ProjectWeeb.GameCard.Business
         public List<CardPosition> Player1Side { get; set; }
 
         public List<CardPosition> Player2Side { get; set; }
-
-        public BattleField PreviousBattlefield { get; set; }
-
+        
         private void InitializeBattleField()
         {
             Player1Side = new List<CardPosition>();

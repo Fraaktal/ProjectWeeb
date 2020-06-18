@@ -20,7 +20,7 @@ namespace ProjectWeeb.GameCard.Business
             
             BattleField = new BattleField();
 
-            GameConnection = new HubConnectionBuilder().WithUrl("http://trucmachin/GameHub").Build();
+            GameConnection = new HubConnectionBuilder().WithUrl("http://vps805844.ovh.net:50322/GameHub").Build();
 #if DEBUG
             GameConnection = new HubConnectionBuilder().WithUrl("http://localhost:50322/GameHub").Build();
 #endif
@@ -56,18 +56,6 @@ namespace ProjectWeeb.GameCard.Business
             try
             {
                 await GameConnection.StartAsync();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
-        private async void Disconnect()
-        {
-            try
-            {
-                await GameConnection.StopAsync();
             }
             catch (Exception e)
             {
@@ -254,7 +242,7 @@ namespace ProjectWeeb.GameCard.Business
             for (int i = 0; i < cards.Count; i++)
             {
                 int id = cards.ElementAt(i).CardId;
-                int life = cards.ElementAt(i).Life; // TODO attention
+                int life = cards.ElementAt(i).Life;
                 int st = cards.ElementAt(i).Strength;
                 result[i] = new[] {id, life, st};
             }

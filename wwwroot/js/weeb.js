@@ -536,15 +536,6 @@ function placeImages() {
 
     gameElements.push(ge);
 
-    //drawPile
-    xPos = 9 * (basicWidth + 5);
-    yPos = totalHeight - basicHeigth - 10;
-
-    id = 20;
-    ge = initGraphicElement("Next", id, cardImages[id], xPos, yPos, basicWidth, basicHeigth);
-
-    gameElements.push(ge);
-
     for (var i = 0; i < 8; i++) {
         var offset = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5)/ 2;
         xPos = offset + i * (5 + basicWidth * 2 / 3);
@@ -588,14 +579,14 @@ function drawImagesOnCanvas() {
         }
         else if (ge.type === "Text") {
             context.save();
-            context.font = "bold 22pt Calibri,Geneva,Arial"; //TODO responsive
+            context.font = "bold 22pt Calibri,Geneva,Arial";
             context.fillStyle = "#f5be27";
             context.fillText(ge.info, ge.posX, ge.posY);
             context.restore();
         }
         else if (ge.type === "TextLife") {
             context.save();
-            context.font = "bold 22pt Calibri,Geneva,Arial"; //TODO responsive
+            context.font = "bold 22pt Calibri,Geneva,Arial";
             context.fillStyle = "#510000";
             context.fillText(ge.info, ge.posX, ge.posY);
             context.restore();
