@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ProjectWeeb.GameCard.Business.BusinessData;
@@ -36,6 +37,7 @@ namespace ProjectWeeb.GameCard.Business
             if (position != null)
             {
                 position.Card = card;
+                position.Life = card.Life;
             }
         }
         
@@ -45,6 +47,7 @@ namespace ProjectWeeb.GameCard.Business
             if (position != null)
             {
                 position.Card = card;
+                position.Life = card.Life;
             }
         }
 
@@ -120,7 +123,7 @@ namespace ProjectWeeb.GameCard.Business
             foreach (var cardPosition in Player1Side)
             {
                 int id = cardPosition.Card?.CardId ?? -1;
-                int life = cardPosition.Card?.Life ?? -1;
+                int life = cardPosition.Life;
                 int st = cardPosition.Card?.Strength ?? -1;
                 res.Add(new []{id,life,st});
             }
@@ -134,7 +137,7 @@ namespace ProjectWeeb.GameCard.Business
             foreach (var cardPosition in Player2Side)
             {
                 int id = cardPosition.Card?.CardId ?? -1;
-                int life = cardPosition.Card?.Life ?? -1;
+                int life = cardPosition.Life;
                 int st = cardPosition.Card?.Strength ?? -1;
                 res.Add(new[] { id, life, st });
             }
@@ -142,44 +145,61 @@ namespace ProjectWeeb.GameCard.Business
             return res.ToArray();
         }
 
-        public Card GetPlayer1CardByPosition(in int positionOrigin)
+        public CardPosition GetPlayer1CardPositionByPosition(in int positionOrigin)
         {
-            return Player1Side.ElementAtOrDefault(positionOrigin)?.Card;
+            return Player1Side.ElementAtOrDefault(positionOrigin);
         }
 
-        public Card GetPlayer2CardByPosition(in int positionOrigin)
+        public CardPosition GetPlayer2CardPositionByPosition(in int positionOrigin)
         {
-            return Player2Side.ElementAtOrDefault(positionOrigin)?.Card;
+            return Player2Side.ElementAtOrDefault(positionOrigin);
         }
 
-        public void DamagePlayer2CardByPosition(in int positionTargeted, in int cardStrength)
+        public void CleanDeadCard()
         {
-            CardPosition cardP = Player2Side.ElementAtOrDefault(positionTargeted);
-            if (cardP != null)
+            foreach (var cardPosition in Player1Side)
             {
-                cardP.Card.Life -= cardStrength;
-
-                if (cardP.Card.Life <= 0)
+                if (cardPosition.Card != null && cardPosition.Life < 1)
                 {
-                    UnsetCardForPlayer2(positionTargeted);
+                    UnsetCardForPlayer1(cardPosition.Position);
+                }
+            }
+
+            foreach (var cardPosition in Player2Side)
+            {
+                if (cardPosition.Card != null && cardPosition.Life < 1)
+                {
+                    UnsetCardForPlayer2(cardPosition.Position);
                 }
             }
         }
 
-        public void DamagePlayer1CardByPosition(in int positionTargeted, in int cardStrength)
+        public int GetPlayer2CardCount()
         {
-            CardPosition cardP = Player1Side.ElementAtOrDefault(positionTargeted);
-            if (cardP != null)
+            int res = 0;
+            foreach (var cardPosition in Player2Side)
             {
-                cardP.Card.Life -= cardStrength;
-
-                if (cardP.Card.Life <= 0)
+                if (cardPosition.Card != null)
                 {
-                    UnsetCardForPlayer1(positionTargeted);
+                    res++;
                 }
             }
+
+            return res;
         }
 
-      
+        public int GetPlayer1CardCount()
+        {
+            int res = 0;
+            foreach (var cardPosition in Player1Side)
+            {
+                if (cardPosition.Card != null)
+                {
+                    res++;
+                }
+            }
+
+            return res;
+        }
     }
 }

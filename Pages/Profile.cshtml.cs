@@ -13,6 +13,12 @@ namespace ProjectWeeb.Pages
     {
         public void OnGet()
         {
+            string s = HttpContext.Session.GetString("user");
+
+            if (s == null || s.Equals(""))
+            {
+                Response.Redirect("/Connexion");
+            }
         }
 
         public int UserId { get; set; }

@@ -10,7 +10,6 @@ namespace ProjectWeeb.Communication
 {
     public class GameHub : Hub
     {
-        //NOT GOOD GERER DANS LE GAME
         public async Task PlayerConnectedOnGame(string idGame, string idUserS)
         {
             int idUser = int.Parse(idUserS);
@@ -64,6 +63,31 @@ namespace ProjectWeeb.Communication
             int idUser = int.Parse(idUserS);
 
             await Clients.Client(idGame).SendAsync("AttackCard", idUser, positionOrigin, positionTargeted);
+        }
+
+        public async Task CardAttacked(string idPlayerOrigin, string idPlayerTargeted, int[][] originSide, int[][] targetSide)
+        {
+            await Clients.Client(idPlayerOrigin).SendAsync("CardAttacked", originSide, targetSide.Reverse());
+            await Clients.Client(idPlayerTargeted).SendAsync("CardAttacked", targetSide, originSide.Reverse());
+        }
+
+        public async Task AttackEnemy(string idGame, string idUserS, int positionOrigin)
+        {
+            int idUser = int.Parse(idUserS);
+
+            await Clients.Client(idGame).SendAsync("AttackEnemy", idUser, positionOrigin);
+        }
+        
+        public async Task PlayerAttacked(string idPlayerOrigin, string idPlayerTargeted, int newLifeTarget)
+        {
+            await Clients.Client(idPlayerOrigin).SendAsync("EnemyAttacked", newLifeTarget);
+            await Clients.Client(idPlayerTargeted).SendAsync("PlayerAttacked", newLifeTarget);
+        }
+        
+        public async Task EndGame(string idWinner, string idLoser)
+        {
+            await Clients.Client(idWinner).SendAsync("GameWon");
+            await Clients.Client(idLoser).SendAsync("GameLost");
         }
     }
 }

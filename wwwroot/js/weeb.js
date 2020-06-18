@@ -96,12 +96,43 @@ connection.on("CardAttackedSuccessfuly", function (pSide, eSide) {
     doPlaceAndDraw();
 });
 
+connection.on("CardAttacked", function (pSide, eSide) {
+    currentBattleFieldEnemyPlayer = eSide;
+    currentBattleFieldCurrentPlayer = pSide;
+    doPlaceAndDraw();
+});
+
+connection.on("PlayerAttacked", function (newLife) {
+    playerLife = newLife;
+    doPlaceAndDraw();
+});
+
+connection.on("EnemyAttacked", function (newLife) {
+    enemyLife = newLife;
+    doPlaceAndDraw();
+});
+
+connection.on("GameWon", function () {
+    var res = confirm("Félicitation vous avez remporté la partie !");
+
+    if (res || !res) {
+        document.location.href = "Connexion";
+    }
+});
+
+connection.on("GameLost", function () {
+    var res = confirm("Dommage, vous avez perdu...");
+
+    if (res || !res) {
+        document.location.href = "Connexion";
+    }
+});
+
 connection.on("TurnChanged", function (isPlayerTurn, handCards) {
     currentHand = handCards;
     isPlayerCurrentTurn = isPlayerTurn;
 
-    placeHandCards();
-    drawImages();
+    doPlaceAndDraw();
 
     if (isPlayerCurrentTurn) {
         //permet d'envoyer un evenement qui finira le tour du joueur s'il prends trop longtemps
@@ -115,16 +146,12 @@ connection.on("TurnChanged", function (isPlayerTurn, handCards) {
 connection.on("PlayerCardPlayed", function (handCards, pSide) {
     currentHand = handCards;
     currentBattleFieldCurrentPlayer = pSide;
-    placeHandCards();
-    placeCardsOnBattleField();
-    drawImages();
+    doPlaceAndDraw();
 });
 
 connection.on("EnemyCardPlayedClient", function (pSide) {
     currentBattleFieldEnemyPlayer = pSide;
-    placeHandCards();
-    placeCardsOnBattleField();
-    drawImages();
+    doPlaceAndDraw();
 });
 
 connection.start().then(function () {
@@ -179,8 +206,13 @@ function handleClick(ge) {
         selectedCardId = ge.info;
         selectedCardPosition = ge.position;
     }
-    else if (ge.type === "EnemyPlayedCard") {
+    else if (ge.type === "EnemyPlayedCard" && currentMode === "CanAttack") {
         connection.invoke("AttackCard", idGame, idUser, selectedCardPosition, ge.position).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+    else if (ge.type === "Target" && currentMode === "CanAttack") {
+        connection.invoke("AttackEnemy", idGame, idUser, selectedCardPosition).catch(function (err) {
             return console.error(err.toString());
         });
     }
@@ -416,7 +448,7 @@ function placeText() {
     xPos = basicWidth * 0.4;
     yPos = totalHeight - basicHeigth * 0.35;
 
-    ge = initGraphicElement("Text", playerLife, null, xPos, yPos, 0, 0);
+    ge = initGraphicElement("Text", playerLife, null, xPos, yPos, textSize, 0);
     gameElements.push(ge);
 
 
@@ -425,7 +457,7 @@ function placeText() {
     xPos = totalWidth - basicWidth * 0.8;
     yPos = basicHeigth * 0.25;
 
-    ge = initGraphicElement("Text", enemyName, null, xPos, yPos, 0, 0);
+    ge = initGraphicElement("Text", enemyName, null, xPos, yPos, textSize, 0);
     gameElements.push(ge);
     
     //Enemy Life
@@ -433,8 +465,37 @@ function placeText() {
     xPos = totalWidth - basicWidth * 0.6;
     yPos = basicHeigth * 0.65;
 
-    ge = initGraphicElement("Text", enemyLife, null, xPos, yPos, 0, 0);
+    ge = initGraphicElement("Text", enemyLife, null, xPos, yPos, textSize, 0);
     gameElements.push(ge);
+
+    var currentPos = 0;
+
+    currentBattleFieldCurrentPlayer.forEach(function (c) {
+
+        var offset = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5) / 2;
+
+        if (c[0] !== -1) {
+            xPos = offset + currentPos * (5 + basicWidth * 2 / 3) + basicWidth * 0.3;
+            yPos = totalHeight * 0.8 / 2 + 30 + basicHeigth*0.55;
+            ge = initGraphicElement("TextLife", c[1], null, xPos, yPos, textSize, 0);
+            gameElements.push(ge);
+        }
+        currentPos++;
+    });
+
+    currentPos = 0;
+
+    currentBattleFieldEnemyPlayer.forEach(function (c) {
+        var offset = (totalWidth - 8 * (5 + basicWidth * 2 / 3) - 5) / 2;
+
+        if (c[0] !== -1) {
+            xPos = offset + currentPos * (5 + basicWidth * 2 / 3) + basicWidth*0.3;
+            yPos = totalHeight * 0.8 / 2 - basicHeigth *0.6;
+            ge = initGraphicElement("TextLife", c[1], null, xPos, yPos, textSize, 0);
+            gameElements.push(ge);
+        }
+        currentPos++;
+    });
 
 
 }
@@ -512,10 +573,10 @@ function doPlaceAndDraw() {
     placeHandCards();
     placeCardsOnBattleField();
     placeText();
-    drawImages();
+    drawImagesOnCanvas();
 }
 
-function drawImages() {
+function drawImagesOnCanvas() {
     context.drawImage(cardImages[24], 0, 0, context.canvas.width, context.canvas.height);
     gameElements.forEach(function (ge) {
         if (ge.type === "EnemyPlayedCard") {
@@ -525,10 +586,19 @@ function drawImages() {
             context.drawImage(ge.image, 0, 0, ge.width, ge.height);
             context.restore();
         }
-        if (ge.type === "Text") {
+        else if (ge.type === "Text") {
+            context.save();
             context.font = "bold 22pt Calibri,Geneva,Arial"; //TODO responsive
             context.fillStyle = "#f5be27";
             context.fillText(ge.info, ge.posX, ge.posY);
+            context.restore();
+        }
+        else if (ge.type === "TextLife") {
+            context.save();
+            context.font = "bold 22pt Calibri,Geneva,Arial"; //TODO responsive
+            context.fillStyle = "#510000";
+            context.fillText(ge.info, ge.posX, ge.posY);
+            context.restore();
         }
         else {
             context.drawImage(ge.image, ge.posX, ge.posY, ge.width, ge.height);

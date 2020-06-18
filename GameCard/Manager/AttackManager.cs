@@ -13,14 +13,14 @@ namespace ProjectWeeb.GameCard.Manager
         public AttackManager(BattleField battleField)
         {
             BattleField = battleField;
-            AttackById = initializeAttackById();
+            AttackById = InitializeAttackById();
         }
 
         private BattleField BattleField {get;set;}
 
         public Dictionary<int, Action<int, int, bool>> AttackById { get; set; }
 
-        public Dictionary<int, Action<int, int, bool>> initializeAttackById()
+        public Dictionary<int, Action<int, int, bool>> InitializeAttackById()
         {
             Dictionary<int, Action<int, int, bool>> result =new Dictionary<int, Action<int, int, bool>>
             {
@@ -60,12 +60,24 @@ namespace ProjectWeeb.GameCard.Manager
         {
             if (isPlayer2Targeted)
             {
-                BattleField.GetPlayer2CardByPosition(target).Life -= BattleField.GetPlayer1CardByPosition(origin).Strength;
+                Card c = BattleField.GetPlayer1CardPositionByPosition(origin).Card;
+
+                if (c != null)
+                {
+                    BattleField.GetPlayer2CardPositionByPosition(target).Life -= c.Strength;
+                }
             }
             else
             {
-                BattleField.GetPlayer2CardByPosition(target).Life -= BattleField.GetPlayer1CardByPosition(origin).Strength;
+                Card c = BattleField.GetPlayer2CardPositionByPosition(origin).Card;
+
+                if (c != null)
+                {
+                    BattleField.GetPlayer1CardPositionByPosition(target).Life -= c.Strength;
+                }
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Megumin_Explosioooon(int origin, int target, bool isPlayer2Targeted)
@@ -73,13 +85,25 @@ namespace ProjectWeeb.GameCard.Manager
             if (isPlayer2Targeted)
             {
                 BattleField.Player2Side.Clear();
-                BattleField.GetPlayer1CardByPosition(origin).CurrentStatus = Card.Status.Sleeping;
+
+                Card c = BattleField.GetPlayer1CardPositionByPosition(origin).Card;
+                if (c != null)
+                {
+                    c.CurrentStatus = Card.Status.Sleeping;
+                }
             }
             else
             {
                 BattleField.Player1Side.Clear();
-                BattleField.GetPlayer1CardByPosition(origin).CurrentStatus = Card.Status.Sleeping;
+                
+                Card c = BattleField.GetPlayer2CardPositionByPosition(origin).Card;
+                if (c != null)
+                {
+                    c.CurrentStatus = Card.Status.Sleeping;
+                }
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void SeeleAttack(int origin, int target, bool isPlayer2Targeted)
@@ -89,6 +113,8 @@ namespace ProjectWeeb.GameCard.Manager
             {
                 BasicAttack(origin, target, isPlayer2Targeted);
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Joker_All_Out_Attack(int origin, int target, bool isPlayer2Targeted)
@@ -105,6 +131,8 @@ namespace ProjectWeeb.GameCard.Manager
             {
                 BasicAttack(origin, target, isPlayer2Targeted);
             }
+            
+            BattleField.CleanDeadCard();
         }
 
         private void IronMan_And_I_am_Iron_Man(int origin, int target, bool isPlayer2Targeted)
@@ -128,24 +156,36 @@ namespace ProjectWeeb.GameCard.Manager
                 }
             }
             
+            BattleField.CleanDeadCard();
         }
 
         private void IronMan_Bleeding_Edge_Armor(int origin, int target, bool isPlayer2Targeted)
         {
             if (isPlayer2Targeted)
             {
-                BattleField.GetPlayer2CardByPosition(target).Shield = 5;
+                Card c = BattleField.GetPlayer2CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    c.Shield = 5;
+                }
             }
             else
             {
-                BattleField.GetPlayer1CardByPosition(target).Shield = 5;
+                Card c = BattleField.GetPlayer1CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    c.Shield = 5;
+                }
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void SaikiKusuo_Retour_arriere(int origin, int target, bool isPlayer2Targeted)
         {
             //Card card = BattleField.PreviousBattlefield.GetPlayerCard(arg2);
             //BattleField.SetCardForPlayer1(card, arg2.Position);
+            //BattleField.CleanDeadCard();
         }
 
         private void Kira_Death_note(int origin, int target, bool isPlayer2Targeted)
@@ -158,6 +198,8 @@ namespace ProjectWeeb.GameCard.Manager
             {
                 BattleField.UnsetCardForPlayer1(target);
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Guts_Berserk(int origin, int target, bool isPlayer2Targeted)
@@ -172,10 +214,13 @@ namespace ProjectWeeb.GameCard.Manager
             {
                 BasicAttack(origin, target + 1, isPlayer2Targeted);
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void AllMight_La_cavalerie_est_la(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
@@ -189,6 +234,8 @@ namespace ProjectWeeb.GameCard.Manager
             {
                 BattleField.UnsetCardForPlayer1(target);
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Sans_Bone(int origin, int target, bool isPlayer2Targeted)
@@ -199,30 +246,53 @@ namespace ProjectWeeb.GameCard.Manager
             {
                 BasicAttack(origin, target, isPlayer2Targeted);
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Pikachu_Pika_pika(int origin, int target, bool isPlayer2Targeted)
         {
             if(isPlayer2Targeted)
             {
-                BattleField.GetPlayer2CardByPosition(target).CurrentStatus = Card.Status.Confuse;
+                Card c = BattleField.GetPlayer2CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    c.CurrentStatus = Card.Status.Confuse;
+                }
             }
             else
             {
-                BattleField.GetPlayer1CardByPosition(target).CurrentStatus = Card.Status.Confuse;
+                Card c = BattleField.GetPlayer1CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    c.CurrentStatus = Card.Status.Confuse;
+                }
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Pikachu_Tonerre(int origin, int target, bool isPlayer2Targeted)
         {
             if (isPlayer2Targeted)
             {
-                BattleField.GetPlayer2CardByPosition(target).Life -= BattleField.GetPlayer1CardByPosition(origin).Strength + 3;
+                Card c = BattleField.GetPlayer1CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    BattleField.GetPlayer2CardPositionByPosition(target).Life -= c.Strength + 3;
+                }
+                 
             }
             else
             {
-                BattleField.GetPlayer1CardByPosition(target).Life -= BattleField.GetPlayer2CardByPosition(origin).Strength + 3;
+                Card c = BattleField.GetPlayer2CardPositionByPosition(origin).Card;
+                if (c != null)
+                {
+                    BattleField.GetPlayer1CardPositionByPosition(target).Life -= c.Strength + 3;
+                }
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Sonic_Attaque_rapide(int origin, int target, bool isPlayer2Targeted)
@@ -231,23 +301,32 @@ namespace ProjectWeeb.GameCard.Manager
             {
                 BasicAttack(origin, target, isPlayer2Targeted);
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Zelda_Princesse_Hyrule(int origin, int target, bool isPlayer2Targeted)
         {
             foreach (var cardPosition in BattleField.Player1Side)
             {
-                cardPosition.Card.Life += 1;
+                if (cardPosition.Card != null)
+                {
+                    cardPosition.Life += 1;
+                }
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Mustang_Snap(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
         private void Asuna_Protecc(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
@@ -257,14 +336,16 @@ namespace ProjectWeeb.GameCard.Manager
             {
                 Random rand = new Random();
                 int power = (int)rand.NextDouble() * 6 + 1;
-                BattleField.GetPlayer2CardByPosition(target).Life -= power;
+                BattleField.GetPlayer2CardPositionByPosition(target).Life -= power;
             }
             else
             {
                 Random rand = new Random();
                 int power = (int)rand.NextDouble() * 6 + 1;
-                BattleField.GetPlayer1CardByPosition(target).Life -= power;
+                BattleField.GetPlayer1CardPositionByPosition(target).Life -= power;
             }
+
+            BattleField.CleanDeadCard();
         }
 
         private void Aqua_Inutile(int origin, int target, bool isPlayer2Targeted)
@@ -274,21 +355,25 @@ namespace ProjectWeeb.GameCard.Manager
 
         private void Aqua_Reveil_des_dieux(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
         private void Yuno_Genocide(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
         private void Mikasa_Deplacement_Aerien(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
         private void Makise_Time_travel(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
     }
