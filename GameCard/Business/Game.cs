@@ -382,12 +382,12 @@ namespace ProjectWeeb.GameCard.Business
 
         private bool CheckForEndGame()
         {
-            if (Player2.Hp == 0 || Player2.CurrentHand.Count == 0 && Player2.DrawPile.Count == 0 && BattleField.GetPlayer2CardCount() == 0)
+            if (Player2.Hp <= 0 || Player2.CurrentHand.Count == 0 && Player2.DrawPile.Count == 0 && BattleField.GetPlayer2CardCount() == 0)
             {
                 GameConnection.InvokeAsync("EndGame", Player1.ConnectionId, Player2.ConnectionId);
                 return true;
             }
-            else if (Player1.Hp == 0 || Player1.CurrentHand.Count == 0 && Player1.DrawPile.Count == 0 && BattleField.GetPlayer1CardCount() == 0)
+            else if (Player1.Hp <= 0 || Player1.CurrentHand.Count == 0 && Player1.DrawPile.Count == 0 && BattleField.GetPlayer1CardCount() == 0)
             {
                 GameConnection.InvokeAsync("EndGame", Player2.ConnectionId, Player1.ConnectionId);
                 return true;
