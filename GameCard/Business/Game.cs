@@ -7,6 +7,7 @@ using System.Timers;
 using LiteDB.Engine;
 using Microsoft.AspNetCore.SignalR.Client;
 using ProjectWeeb.GameCard.Business.BusinessData;
+using ProjectWeeb.GameCard.Control;
 using ProjectWeeb.GameCard.Manager;
 
 namespace ProjectWeeb.GameCard.Business
@@ -385,11 +386,23 @@ namespace ProjectWeeb.GameCard.Business
             if (Player2.Hp <= 0 || Player2.CurrentHand.Count == 0 && Player2.DrawPile.Count == 0 && BattleField.GetPlayer2CardCount() == 0)
             {
                 GameConnection.InvokeAsync("EndGame", Player1.ConnectionId, Player2.ConnectionId);
+                int index = CWebSite.GetInstance().GameManager.Games.FindIndex(g => g.GameId == GameId);
+                if (index != -1)
+                {
+                    CWebSite.GetInstance().GameManager.Games.RemoveAt(index);
+                }
+
                 return true;
             }
             else if (Player1.Hp <= 0 || Player1.CurrentHand.Count == 0 && Player1.DrawPile.Count == 0 && BattleField.GetPlayer1CardCount() == 0)
             {
                 GameConnection.InvokeAsync("EndGame", Player2.ConnectionId, Player1.ConnectionId);
+                int index = CWebSite.GetInstance().GameManager.Games.FindIndex(g => g.GameId == GameId);
+                if (index != -1)
+                {
+                    CWebSite.GetInstance().GameManager.Games.RemoveAt(index);
+                }
+
                 return true;
             }
 
