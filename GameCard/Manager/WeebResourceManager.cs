@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ProjectWeeb.GameCard.Business;
+using ProjectWeeb.GameCard.Business.BusinessData;
 using ProjectWeeb.GameCard.Helper;
 
 namespace ProjectWeeb.GameCard.Manager
@@ -126,12 +127,54 @@ namespace ProjectWeeb.GameCard.Manager
             return new KeyValuePair<int, Effect>(-1,null);
         }
 
-        //public string GetB64Image(int cardId)
-        //{
-        //    string path = GetCardImageByCardId(cardId);
-        //    byte[] imageArray = System.IO.File.ReadAllBytes(path);
-        //    string b64s = Convert.ToBase64String(imageArray);
-        //    return b64s;
-        //}
+        public Dictionary<int, Card> GetCardsByIdFromFile()
+        {
+
+            Dictionary<int, Card> result = new Dictionary<int, Card>();
+            var resource = Assembly.GetExecutingAssembly().GetManifestResourceNames().FirstOrDefault(r => r.Contains($"ProjectResources.Cards.Cards.cd"));
+            if (resource != null)
+            {
+                var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+                if (stream != null)
+                {
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        string line;
+
+                        while ((line = sr.ReadLine()) != null)
+                        {
+                            var card = ComputeLineToCard(line);
+                            if (card != null)
+                            {
+                                result.Add(card.CardId, card);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private Card ComputeLineToCard(string line)
+        {
+            string[] values = line.Split("|");
+            if (values.Length == 4)
+            {
+                string ids = values[0];
+                string name = values[1];
+                string sts = values[2];
+                string lifes = values[3];
+
+                int.TryParse(ids, out int id);
+                int.TryParse(sts, out int st);
+                int.TryParse(lifes, out int life);
+
+                var effects = EffectManager.GetInstance().GetEffectsByCardId(id);
+                return new Card(id, name, life, st,effects);
+            }
+
+            return null;
+        }
     }
 }

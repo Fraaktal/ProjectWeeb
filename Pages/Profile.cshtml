@@ -1,4 +1,7 @@
 ﻿@page
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using ProjectWeeb.GameCard.Business.BusinessData
 @using ProjectWeeb.GameCard.Control
 @model ProjectWeeb.Pages.ProfileModel
 @{
@@ -9,8 +12,17 @@
 
         <!--Left top level corner -->
         <div id="Corner">
-            <!--Put img as background in css, get Username and Level/rank from DB-->
-            level
+            @{
+                string s = HttpContext.Session.GetString("user");
+                string name = "";
+                if (!string.IsNullOrEmpty(s))
+                {
+                    User user = JsonConvert.DeserializeObject<User>(s);
+                    name = user.UserName;
+                }
+
+                <h2>@name</h2>
+            }
         </div>
         
         <div id="profileMenu">

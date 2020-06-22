@@ -10,26 +10,19 @@ namespace ProjectWeeb.GameCard.Manager
 {
     public class AttackManager
     {
-        public AttackManager()
+        public AttackManager(BattleField battleField)
         {
-
+            BattleField = battleField;
+            AttackById = InitializeAttackById();
         }
 
-        private BattleField BattleField
+        private BattleField BattleField {get;set;}
+
+        public Dictionary<int, Action<int, int, bool>> AttackById { get; set; }
+
+        public Dictionary<int, Action<int, int, bool>> InitializeAttackById()
         {
-            get
-            {
-                //return CWebSite.GetInstance().GameManager.GameController.BattleField;
-
-                return null;
-            }
-        }
-
-        public Dictionary<int, Action<CardPosition, CardPosition>> AttackById { get; set; }
-
-        public Dictionary<int, Action<CardPosition, CardPosition>> initializeAttackById()
-        {
-            Dictionary<int, Action<CardPosition, CardPosition>> result =new Dictionary<int, Action<CardPosition, CardPosition>>
+            Dictionary<int, Action<int, int, bool>> result =new Dictionary<int, Action<int, int, bool>>
             {
                 {0, BasicAttack},
                 {1, Megumin_Explosioooon},
@@ -63,161 +56,324 @@ namespace ProjectWeeb.GameCard.Manager
             return result;
         }
 
-        private void BasicAttack(CardPosition arg1, CardPosition arg2)
+        private void BasicAttack(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.GetEnnemyCard(arg2).Life -= arg1.Card.Strength;
+            if (isPlayer2Targeted)
+            {
+                Card c = BattleField.GetPlayer1CardPositionByPosition(origin).Card;
+
+                if (c != null)
+                {
+                    BattleField.GetPlayer2CardPositionByPosition(target).Life -= c.Strength;
+                }
+            }
+            else
+            {
+                Card c = BattleField.GetPlayer2CardPositionByPosition(origin).Card;
+
+                if (c != null)
+                {
+                    BattleField.GetPlayer1CardPositionByPosition(target).Life -= c.Strength;
+                }
+            }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Megumin_Explosioooon(CardPosition arg1, CardPosition arg2)
+        private void Megumin_Explosioooon(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.EnnemySide.Clear();
-            BattleField.GetPlayerCard(arg1).CurrentStatus = Card.Status.Sleeping;
+            if (isPlayer2Targeted)
+            {
+                BattleField.Player2Side.Clear();
+
+                Card c = BattleField.GetPlayer1CardPositionByPosition(origin).Card;
+                if (c != null)
+                {
+                    c.CurrentStatus = Card.Status.Sleeping;
+                }
+            }
+            else
+            {
+                BattleField.Player1Side.Clear();
+                
+                Card c = BattleField.GetPlayer2CardPositionByPosition(origin).Card;
+                if (c != null)
+                {
+                    c.CurrentStatus = Card.Status.Sleeping;
+                }
+            }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void SeeleAttack(CardPosition arg1, CardPosition arg2)
+        private void SeeleAttack(int origin, int target, bool isPlayer2Targeted)
         {
+
             for (int i = 0; i < 2; i++)
             {
-                BasicAttack(arg1, arg2);
+                BasicAttack(origin, target, isPlayer2Targeted);
             }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Joker_All_Out_Attack(CardPosition arg1, CardPosition arg2)
+        private void Joker_All_Out_Attack(int origin, int target, bool isPlayer2Targeted)
         {
-            foreach (var cardPosition in BattleField.CurrentPlayerSide)
+            foreach (var cardPosition in BattleField.Player1Side)
             {
-                BasicAttack(cardPosition, arg2);
+                BasicAttack(cardPosition.Position, target, isPlayer2Targeted);
             }
         }
 
-        private void IronMan_Rayon_laser(CardPosition arg1, CardPosition arg2)
+        private void IronMan_Rayon_laser(int origin, int target, bool isPlayer2Targeted)
         {
-            var cards = BattleField.GetEnnemyCardColumn(arg2);
-
-            foreach (var card in cards)
+            for(var i = 0;i<3;i++)
             {
-                BasicAttack(arg1,card);
+                BasicAttack(origin, target, isPlayer2Targeted);
             }
+            
+            BattleField.CleanDeadCard();
         }
 
-        private void IronMan_And_I_am_Iron_Man(CardPosition arg1, CardPosition arg2)
+        private void IronMan_And_I_am_Iron_Man(int origin, int target, bool isPlayer2Targeted)
         {
-            List<CardPosition> cards = BattleField.GetHalfEnnemies();
-
-            foreach (var card in cards)
+            if (isPlayer2Targeted)
             {
-                BattleField.UnsetCardForEnnemy(card.X,card.Y);
+                List<CardPosition> cards = BattleField.GetHalfPlayer2();
+
+                foreach (var card in cards)
+                {
+                    BattleField.UnsetCardForPlayer2(card.Position);
+                }
             }
+            else
+            {
+                List<CardPosition> cards = BattleField.GetHalfPlayer1();
+
+                foreach (var card in cards)
+                {
+                    BattleField.UnsetCardForPlayer2(card.Position);
+                }
+            }
+            
+            BattleField.CleanDeadCard();
         }
 
-        private void IronMan_Bleeding_Edge_Armor(CardPosition arg1, CardPosition arg2)
+        private void IronMan_Bleeding_Edge_Armor(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.GetPlayerCard(arg1).Shield = 5;
+            if (isPlayer2Targeted)
+            {
+                Card c = BattleField.GetPlayer2CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    c.Shield = 5;
+                }
+            }
+            else
+            {
+                Card c = BattleField.GetPlayer1CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    c.Shield = 5;
+                }
+            }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void SaikiKusuo_Retour_arriere(CardPosition arg1, CardPosition arg2)
+        private void SaikiKusuo_Retour_arriere(int origin, int target, bool isPlayer2Targeted)
         {
-            Card card = BattleField.PreviousBattlefield.GetPlayerCard(arg2);
-            BattleField.SetCardForCurrentPlayer(card, arg2.X,arg2.Y);
+            //Card card = BattleField.PreviousBattlefield.GetPlayerCard(arg2);
+            //BattleField.SetCardForPlayer1(card, arg2.Position);
+            //BattleField.CleanDeadCard();
         }
 
-        private void Kira_Death_note(CardPosition arg1, CardPosition arg2)
+        private void Kira_Death_note(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.UnsetCardForEnnemy(arg2.X, arg2.Y);
+            if (isPlayer2Targeted)
+            {
+                BattleField.UnsetCardForPlayer2(target);
+            }
+            else
+            {
+                BattleField.UnsetCardForPlayer1(target);
+            }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Guts_Berserk(CardPosition arg1, CardPosition arg2)
+        private void Guts_Berserk(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.GetEnnemyCardByPosition(arg2.X-1, arg2.Y).Life -= 1;
-            BattleField.GetEnnemyCardByPosition(arg2.X+1, arg2.Y).Life -= 1;
-            BattleField.GetEnnemyCard(arg2);
+            BasicAttack(origin, target, isPlayer2Targeted);
+            if (target > 0)
+            {
+                BasicAttack(origin, target - 1, isPlayer2Targeted);
+            }
+
+            if (target < 7)
+            {
+                BasicAttack(origin, target + 1, isPlayer2Targeted);
+            }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void AllMight_La_cavalerie_est_la(CardPosition arg1, CardPosition arg2)
+        private void AllMight_La_cavalerie_est_la(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
-        private void Monika_Sayonara(CardPosition arg1, CardPosition arg2)
+        private void Monika_Sayonara(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.UnsetCardForEnnemy(arg2.X, arg2.Y);
+            if (isPlayer2Targeted)
+            {
+                BattleField.UnsetCardForPlayer2(target);
+            }
+            else
+            {
+                BattleField.UnsetCardForPlayer1(target);
+            }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Sans_Bone(CardPosition arg1, CardPosition arg2)
+        private void Sans_Bone(int origin, int target, bool isPlayer2Targeted)
         {
             Random rand = new Random();
             int attaques = (int) rand.NextDouble() * 3;
             for (int i = 0; i < attaques; i++)
             {
-                BasicAttack(arg1,arg2);
+                BasicAttack(origin, target, isPlayer2Targeted);
             }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Pikachu_Pika_pika(CardPosition arg1, CardPosition arg2)
+        private void Pikachu_Pika_pika(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.GetEnnemyCard(arg2).CurrentStatus = Card.Status.Confuse;
+            if(isPlayer2Targeted)
+            {
+                Card c = BattleField.GetPlayer2CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    c.CurrentStatus = Card.Status.Confuse;
+                }
+            }
+            else
+            {
+                Card c = BattleField.GetPlayer1CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    c.CurrentStatus = Card.Status.Confuse;
+                }
+            }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Pikachu_Tonerre(CardPosition arg1, CardPosition arg2)
+        private void Pikachu_Tonerre(int origin, int target, bool isPlayer2Targeted)
         {
-            BattleField.GetEnnemyCard(arg2).Life -= arg1.Card.Strength + 3;
+            if (isPlayer2Targeted)
+            {
+                Card c = BattleField.GetPlayer1CardPositionByPosition(target).Card;
+                if (c != null)
+                {
+                    BattleField.GetPlayer2CardPositionByPosition(target).Life -= c.Strength + 3;
+                }
+                 
+            }
+            else
+            {
+                Card c = BattleField.GetPlayer2CardPositionByPosition(origin).Card;
+                if (c != null)
+                {
+                    BattleField.GetPlayer1CardPositionByPosition(target).Life -= c.Strength + 3;
+                }
+            }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Sonic_Attaque_rapide(CardPosition arg1, CardPosition arg2)
+        private void Sonic_Attaque_rapide(int origin, int target, bool isPlayer2Targeted)
         {
             for (int i = 0; i < 3; i++)
             {
-                BasicAttack(arg1, arg2);
+                BasicAttack(origin, target, isPlayer2Targeted);
             }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Zelda_Princesse_Hyrule(CardPosition arg1, CardPosition arg2)
+        private void Zelda_Princesse_Hyrule(int origin, int target, bool isPlayer2Targeted)
         {
-            foreach (var cardPosition in BattleField.CurrentPlayerSide)
+            foreach (var cardPosition in BattleField.Player1Side)
             {
-                cardPosition.Card.Life += 1;
+                if (cardPosition.Card != null)
+                {
+                    cardPosition.Life += 1;
+                }
             }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Mustang_Snap(CardPosition arg1, CardPosition arg2)
+        private void Mustang_Snap(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
-        private void Asuna_Protecc(CardPosition arg1, CardPosition arg2)
+        private void Asuna_Protecc(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
-        private void Shiro_Puissance_random(CardPosition arg1, CardPosition arg2)
+        private void Shiro_Puissance_random(int origin, int target, bool isPlayer2Targeted)
         {
-            Random rand = new Random();
-            int power = (int)rand.NextDouble() * 6 + 1;
-            BattleField.GetEnnemyCard(arg2).Life -= power;
+            if (isPlayer2Targeted)
+            {
+                Random rand = new Random();
+                int power = (int)rand.NextDouble() * 6 + 1;
+                BattleField.GetPlayer2CardPositionByPosition(target).Life -= power;
+            }
+            else
+            {
+                Random rand = new Random();
+                int power = (int)rand.NextDouble() * 6 + 1;
+                BattleField.GetPlayer1CardPositionByPosition(target).Life -= power;
+            }
+
+            BattleField.CleanDeadCard();
         }
 
-        private void Aqua_Inutile(CardPosition arg1, CardPosition arg2)
+        private void Aqua_Inutile(int origin, int target, bool isPlayer2Targeted)
         {
             //Je suis un commentaire
         }
 
-        private void Aqua_Reveil_des_dieux(CardPosition arg1, CardPosition arg2)
+        private void Aqua_Reveil_des_dieux(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
-        private void Yuno_Genocide(CardPosition arg1, CardPosition arg2)
+        private void Yuno_Genocide(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
-        private void Mikasa_Deplacement_Aerien(CardPosition arg1, CardPosition arg2)
+        private void Mikasa_Deplacement_Aerien(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
 
-        private void Makise_Time_travel(CardPosition arg1, CardPosition arg2)
+        private void Makise_Time_travel(int origin, int target, bool isPlayer2Targeted)
         {
+            //BattleField.CleanDeadCard();
             throw new NotImplementedException();
         }
     }

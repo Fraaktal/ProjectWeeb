@@ -14,26 +14,33 @@
         </div>
 
         <div id="Corner">
-            <!--Put img as background in css, get Username and Level/rnk from DB-->
-            level
+            @{
+                string s = HttpContext.Session.GetString("user");
+                string name = "";
+                if (!string.IsNullOrEmpty(s))
+                {
+                    User user = JsonConvert.DeserializeObject<User>(s);
+                    name = user.UserName;
+                }
+
+                <h2>@name</h2>
+            }
         </div>
 
         <div id="ImgCollect">
             @{
-                string s = HttpContext.Session.GetString("user");
-
-                User user = JsonConvert.DeserializeObject<User>(s);
-
-                foreach (var card in user.Cards)
+                if (!string.IsNullOrEmpty(s))
                 {
+                    User user = JsonConvert.DeserializeObject<User>(s);
 
-                    string path = WeebResourceManager.GetInstance().GetCardImageByCardId(card.CardId);
-                    <img src=@path class="image">
+                    foreach (var card in user.Cards)
+                    {
+
+                        string path = WeebResourceManager.GetInstance().GetCardImageByCardId(card.CardId);
+                        <img src=@path class="image">
+                    }
                 }
 
-                string s2 = HttpContext.Session.GetString("user");
-
-                User user2 = JsonConvert.DeserializeObject<User>(s2);
             }
         </div>
 

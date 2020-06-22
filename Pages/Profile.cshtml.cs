@@ -13,14 +13,18 @@ namespace ProjectWeeb.Pages
     {
         public void OnGet()
         {
+            string s = HttpContext.Session.GetString("user");
+
+            if (s == null || s.Equals(""))
+            {
+                Response.Redirect("/Connexion");
+            }
         }
 
         public int UserId { get; set; }
         
         public async Task<IActionResult> OnPostGamePlateau()
         {
-            //todo Ajouter une alert pour dire recherche de partie en cours
-
             string s = HttpContext.Session.GetString("user");
             User user = JsonConvert.DeserializeObject<User>(s);
             string idGame = null;
@@ -30,7 +34,7 @@ namespace ProjectWeeb.Pages
                 idGame = CWebSite.GetInstance().GameManager.ConnectPlayerToGame(user);
                 if (idGame == null)
                 {
-                    Thread.Sleep(1000); //todo mieux gérer file d'attente?
+                    Thread.Sleep(1000);
                 }
             }
 
